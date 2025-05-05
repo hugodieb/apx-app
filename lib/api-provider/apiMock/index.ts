@@ -2,11 +2,20 @@ import { mockasync } from "@/lib/utils/mockasync"
 import { mockUsers } from "@/lib/mock-data"
 import type { User } from "@/types/user"
 
+export interface RegisterFormData {
+  user: {
+    name: string
+    email: string
+    password: string
+    type: string
+  }
+}
+
 export const whoami = async () => {
   return mockasync(mockUsers.clientes[0])
 }
 
-export const login = async (email: string, password: string, type?: string): Promise<User> => {
+export const login = async (email: string, password: string, type: string): Promise<User> => {
   let foundUser = null
 
   if (type === "cliente") {
@@ -17,21 +26,18 @@ export const login = async (email: string, password: string, type?: string): Pro
     foundUser = mockUsers.admins.find((u) => u.email === email && u.password === password)
   }
 
-  if (!foundUser) {
-    return Promise.reject(new Error("Usuário ou senha inválidos"))
-  }
-
-  const { password: userPassword, ...userWithoutPassword } = foundUser
+  const { ...userWithoutPassword } = foundUser
 
   return mockasync(userWithoutPassword as User);
 }
 
-export const register = async (formData: any) => {
+export const logout = async () => {
+  return mockasync({})
+}
+
+export const register = async (formData: RegisterFormData) => {
   return mockasync({
     user: formData
   })
 }
 
-export const logout = async () => {
-  return mockasync({ success: true })
-}

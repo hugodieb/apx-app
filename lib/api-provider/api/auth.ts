@@ -1,8 +1,6 @@
 import { apiClient } from "./client"
 
 export interface LoginResponse {
-  access: string
-  refresh: string
   user: {
     email: string
     name: string
@@ -10,31 +8,23 @@ export interface LoginResponse {
   }
 }
 
-export const authApi = {
-  login: (email: string, password: string) =>
-    apiClient.post<LoginResponse>("/auth/login/", { email, password }),
-
-  refresh: (refreshToken: string) =>
-    apiClient.post<{ access: string }>("/auth/refresh/", { refresh: refreshToken }),
+export interface RegisterFormData {
+  user: {
+    name: string
+    email: string
+    password: string
+    type: string
+  }
 }
 
+export const login = async (email: string, password: string, type: string): Promise<LoginResponse> => {
+  return apiClient.post<LoginResponse>("/auth/login/", { email, password })
+}
 
-//export const login = async (email: string, password: string, type?: string) => {
-//  const res = await axios.post("/auth/login/", { email, password, type })
-//  return res.data
-//}
-//
-//export const register = async (formData: any) => {
-//  const res = await axios.post("/auth/register/", formData)
-//  return res.data
-//}
-//
-//export const whoami = async () => {
-//  const res = await axios.get("/auth/whoami/")
-//  return res.data
-//}
-//
-//export const logout = async () => {
-//  const res = await axios.post("/auth/logout/")
-//  return res.data
-//}
+export const register = async (formData: RegisterFormData): Promise<RegisterFormData> => {
+  return apiClient.post<RegisterFormData>("/auth/register/", formData)
+}
+
+export const logout = async () => {
+  return apiClient.post("/auth/logout/", null)
+}
