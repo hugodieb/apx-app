@@ -2,11 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAuthStore } from "@/store/auth"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -23,12 +21,9 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function ClienteLoginPage() {
-  const router = useRouter()
-  const setUser = useAuthStore((state) => state.setUser)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
-
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -55,7 +50,6 @@ export default function ClienteLoginPage() {
       setIsLoading(false)
     }
   }
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">

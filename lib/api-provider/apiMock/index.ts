@@ -17,7 +17,7 @@ export const whoami = async () => {
 
 export const login = async (email: string, password: string, type: string): Promise<User> => {
   let foundUser = null
-
+  debugger
   if (type === "cliente") {
     foundUser = mockUsers.clientes.find((u) => u.email === email && u.password === password)
   } else if (type === "prestador") {
@@ -36,8 +36,8 @@ export const logout = async () => {
 }
 
 export const register = async (formData: RegisterFormData) => {
-  return mockasync({
-    user: formData
-  })
+  return mockasync(
+    formData
+  )
 }
 

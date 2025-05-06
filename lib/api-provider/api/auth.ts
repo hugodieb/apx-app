@@ -8,7 +8,7 @@ export interface LoginResponse {
   }
 }
 
-export interface RegisterFormData {
+export interface RegisterParams {
   user: {
     name: string
     email: string
@@ -21,8 +21,8 @@ export const login = async (email: string, password: string, type: string): Prom
   return apiClient.post<LoginResponse>("/auth/login/", { email, password })
 }
 
-export const register = async (formData: RegisterFormData): Promise<RegisterFormData> => {
-  return apiClient.post<RegisterFormData>("/auth/register/", formData)
+export const register = async (formData: RegisterParams): Promise<RegisterParams> => {
+  return apiClient.post<RegisterParams>("/auth/register/", formData)
 }
 
 export const logout = async () => {

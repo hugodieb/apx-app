@@ -18,10 +18,16 @@ type RegisterParams = {
   type: string
 }
 
-const ROUTE_MAP = {
+const ROUTE_DASHBOARD = {
   cliente: "/cliente/dashboard",
   prestador: "/prestador/dashboard",
   admin: "/admin/dashboard"
+}
+
+const ROUTE_LOGIN = {
+  cliente: "/cliente/login",
+  prestador: "/prestador/login",
+  admin: "/admin/login"
 }
 
 export function useAuth() {
@@ -30,13 +36,13 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async ({ email, password, type }: LoginParams) => {
-      const response = await api.login(email, password, type)
+      const response = await api.login(email, password, type || "")
       return response as User
     },
     onSuccess: (user: User) => {
       authStore.setUser(user)
       toast.success("Login realizado com sucesso")
-      const redirectRoute = ROUTE_MAP[user.type] || "/"
+      const redirectRoute = ROUTE_DASHBOARD[user.type] || "/"
       router.push(redirectRoute)
     },
     onError: (error: any) => {
@@ -63,12 +69,17 @@ export function useAuth() {
 
   const useRegisterMutation = useMutation({
     mutationFn: async (formData: RegisterParams) => {
-      const response = await api.register(formData)
+      debugger
+      const response = await api.register({ user: formData })
+      if ('user' in response) {
+        return response.user as User
+      }
       return response as User
     },
-    onSuccess: (user) => {
-      const redirectRoute = ROUTE_MAP[user.type] || "/"
+    onSuccess: (response: User) => {
+      const redirectRoute = ROUTE_LOGIN[response.type] || "/"
       toast.success("Cadastro realizado com sucesso")
+      router.push(redirectRoute)
     },
     onError: (error: any) => {
       toast.error("Erro ao realizar cadastro")
