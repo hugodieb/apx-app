@@ -1,29 +1,21 @@
 import { mockasync } from "@/lib/utils/mockasync"
 import { mockUsers } from "@/lib/mock-data"
+import { LoginParams, RegisterParams } from "@/types/auth"
 import type { User } from "@/types/user"
 
-export interface RegisterFormData {
-  user: {
-    name: string
-    email: string
-    password: string
-    type: string
-  }
-}
 
 export const whoami = async () => {
   return mockasync(mockUsers.clientes[0])
 }
 
-export const login = async (email: string, password: string, type: string): Promise<User> => {
+export const login = async (params: LoginParams): Promise<User> => {
   let foundUser = null
-  debugger
-  if (type === "cliente") {
-    foundUser = mockUsers.clientes.find((u) => u.email === email && u.password === password)
-  } else if (type === "prestador") {
-    foundUser = mockUsers.prestadores.find((u) => u.email === email && u.password === password)
-  } else if (type === "admin") {
-    foundUser = mockUsers.admins.find((u) => u.email === email && u.password === password)
+  if (params.type === "cliente") {
+    foundUser = mockUsers.clientes.find((u) => u.email === params.email && u.password === params.password)
+  } else if (params.type === "prestador") {
+    foundUser = mockUsers.prestadores.find((u) => u.email === params.email && u.password === params.password)
+  } else if (params.type === "admin") {
+    foundUser = mockUsers.admins.find((u) => u.email === params.email && u.password === params.password)
   }
 
   const { ...userWithoutPassword } = foundUser
@@ -35,9 +27,9 @@ export const logout = async () => {
   return mockasync({})
 }
 
-export const register = async (formData: RegisterFormData) => {
+export const register = async (formData: RegisterParams): Promise<User> => {
   return mockasync(
-    formData
+    { ...formData } as User
   )
 }
 

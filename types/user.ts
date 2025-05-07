@@ -27,7 +27,7 @@ export type Prestador = {
   phone: string
   avatar: string
   address: Address
-  services: string[] // por exemplo
+  services: string[]
   available: boolean
   type: "prestador"
 }

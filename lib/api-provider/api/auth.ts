@@ -1,28 +1,17 @@
 import { apiClient } from "./client"
+import { LoginParams, RegisterParams } from "@/types/auth"
+import { User } from "@/types/user"
 
-export interface LoginResponse {
-  user: {
-    email: string
-    name: string
-    type: string
-  }
+
+export const login = async (params: LoginParams): Promise<User> => {
+  const response = await apiClient.post<{ user: User }>("/auth/login/", params)
+  return response.user
+
 }
 
-export interface RegisterParams {
-  user: {
-    name: string
-    email: string
-    password: string
-    type: string
-  }
-}
-
-export const login = async (email: string, password: string, type: string): Promise<LoginResponse> => {
-  return apiClient.post<LoginResponse>("/auth/login/", { email, password })
-}
-
-export const register = async (formData: RegisterParams): Promise<RegisterParams> => {
-  return apiClient.post<RegisterParams>("/auth/register/", formData)
+export const register = async (formData: RegisterParams): Promise<User> => {
+  const response = await apiClient.post<{ user: User }>("/auth/register/", formData)
+  return response.user
 }
 
 export const logout = async () => {

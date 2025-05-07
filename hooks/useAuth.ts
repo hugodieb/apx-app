@@ -2,21 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { authApi as api } from "@/lib/api-provider"
 import { useAuthStore } from "@/store/auth"
 import { useRouter } from "next/navigation"
-import { User } from "@/types/user"
+import type { LoginParams, RegisterParams } from "@/types/auth"
 import { toast } from "sonner"
 
-type LoginParams = {
-  email: string
-  password: string
-  type?: string
-}
-
-type RegisterParams = {
-  name: string
-  email: string
-  password: string
-  type: string
-}
 
 const ROUTE_DASHBOARD = {
   cliente: "/cliente/dashboard",
@@ -35,11 +23,11 @@ export function useAuth() {
   const authStore = useAuthStore.getState()
 
   const loginMutation = useMutation({
-    mutationFn: async ({ email, password, type }: LoginParams) => {
-      const response = await api.login(email, password, type || "")
-      return response as User
+    mutationFn: async (params: LoginParams) => {
+      const response = await api.login(params)
+      return response
     },
-    onSuccess: (user: User) => {
+    onSuccess: (user) => {
       authStore.setUser(user)
       toast.success("Login realizado com sucesso")
       const redirectRoute = ROUTE_DASHBOARD[user.type] || "/"
@@ -69,15 +57,11 @@ export function useAuth() {
 
   const useRegisterMutation = useMutation({
     mutationFn: async (formData: RegisterParams) => {
-      debugger
-      const response = await api.register({ user: formData })
-      if ('user' in response) {
-        return response.user as User
-      }
-      return response as User
+      const response = await api.register(formData)
+      return response
     },
-    onSuccess: (response: User) => {
-      const redirectRoute = ROUTE_LOGIN[response.type] || "/"
+    onSuccess: (user) => {
+      const redirectRoute = ROUTE_LOGIN[user.type] || "/"
       toast.success("Cadastro realizado com sucesso")
       router.push(redirectRoute)
     },

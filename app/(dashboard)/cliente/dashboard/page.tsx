@@ -15,13 +15,11 @@ export default function ClienteDashboardPage() {
 
   useEffect(() => {
     if (!isAuthenticated || user?.type !== "cliente") {
-      debugger
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
 
   if (!isAuthenticated || user?.type !== "cliente") {
-    debugger
     return null
   }
 
