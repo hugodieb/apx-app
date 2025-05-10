@@ -1,13 +1,6 @@
 import { create } from 'zustand'
 import type { User } from '@/types/user'
 
-type Address = {
-  street: string
-  city: string
-  state: string
-  zipCode: string
-}
-
 type AuthStore = {
   user: User | null
   isAuthenticated: boolean

@@ -12,27 +12,27 @@ export function ServiceCarousel() {
   const services = [
     {
       title: "Barbearias",
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/barber.png",
       description: "Cortes de cabelo, barba e tratamentos capilares.",
     },
     {
       title: "Estúdios de Tatuagem",
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/tattoo.png",
       description: "Arte corporal com profissionais talentosos.",
     },
     {
       title: "Salões de Beleza",
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/beleza.png",
       description: "Tratamentos de beleza para cabelo, unhas e pele.",
     },
     {
       title: "Massagistas",
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/massagista.png",
       description: "Relaxe com massagens terapêuticas profissionais.",
     },
     {
       title: "Eletricistas",
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/eletricista.png",
       description: "Serviços elétricos residenciais e comerciais.",
     },
   ]
@@ -66,12 +66,14 @@ export function ServiceCarousel() {
             {services.map((service, index) => (
               <Card key={index} className="min-w-full bg-slate-800 border-none">
                 <CardContent className="p-0">
-                  <div className="relative h-64 md:h-80">
+                  <div className="relative h-64 md:h-80 lg:h-96">
                     <Image
                       src={service.image || "/placeholder.svg"}
                       alt={service.title}
                       fill
                       className="object-cover rounded-t-lg"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority
                     />
                   </div>
                   <div className="p-6">

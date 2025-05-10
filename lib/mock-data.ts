@@ -8,6 +8,7 @@ export const mockUsers = {
       name: "Maria Silva",
       phone: "(11) 98765-4321",
       avatar: "/placeholder.svg?height=200&width=200",
+      cpf: "123.456.789-00",
       address: {
         street: "Rua das Flores, 123",
         city: "São Paulo",
@@ -32,7 +33,6 @@ export const mockUsers = {
         state: "SP",
         zipCode: "01310-100",
       },
-      type: "prestador",
       establishmentId: "estab1", // Referência ao estabelecimento
       serviceType: "hora", // Tipo de serviço: hora, dia, serviço, projeto
       services: [
@@ -46,6 +46,7 @@ export const mockUsers = {
         facebook: "joaobarbeiro",
         whatsapp: "(11) 91234-5678",
       },
+      type: "prestador",
     },
     {
       id: "prestador2",
@@ -61,7 +62,6 @@ export const mockUsers = {
         state: "SP",
         zipCode: "01310-100",
       },
-      type: "prestador",
       establishmentId: "estab1", // Mesmo estabelecimento que João
       serviceType: "hora",
       services: [
@@ -75,6 +75,7 @@ export const mockUsers = {
         facebook: "pedrobarbeiro",
         whatsapp: "(11) 92345-6789",
       },
+      type: "prestador",
     },
     {
       id: "prestador3",
@@ -90,7 +91,6 @@ export const mockUsers = {
         state: "SP",
         zipCode: "01305-000",
       },
-      type: "prestador",
       establishmentId: "estab2",
       serviceType: "dia",
       services: [
@@ -103,6 +103,7 @@ export const mockUsers = {
         instagram: "@analimpeza",
         whatsapp: "(11) 93456-7890",
       },
+      type: "prestador",
     },
     {
       id: "prestador4",
@@ -118,7 +119,6 @@ export const mockUsers = {
         state: "SP",
         zipCode: "01301-000",
       },
-      type: "prestador",
       establishmentId: "estab3",
       serviceType: "servico",
       services: [
@@ -131,6 +131,7 @@ export const mockUsers = {
         facebook: "carloseletricista",
         whatsapp: "(11) 94567-8901",
       },
+      type: "prestador",
     },
     {
       id: "prestador5",
@@ -146,7 +147,6 @@ export const mockUsers = {
         state: "SP",
         zipCode: "05402-000",
       },
-      type: "prestador",
       establishmentId: "estab4",
       serviceType: "projeto",
       services: [
@@ -160,6 +160,7 @@ export const mockUsers = {
         facebook: "robertoengenheiro",
         whatsapp: "(11) 95678-9012",
       },
+      type: "prestador",
     },
   ],
   admins: [
@@ -169,14 +170,7 @@ export const mockUsers = {
       password: "Admin123",
       name: "Admin User",
       role: "superadmin",
-      phone: "(11) 90000-0000",
-      avatar: "/placeholder.svg?height=200&width=200",
-      address: {
-        street: "Av. Pirituba, 1200",
-        city: "São Paulo",
-        state: "SP",
-        zipCode: "05402-010",
-      }
+      type: "admin",
     },
   ],
 }

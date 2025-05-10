@@ -1,47 +1,41 @@
-// Endereço comum a todos
-export type Address = {
-  street: string
-  city: string
-  state: string
-  zipCode: string
+export type UserType = "cliente" | "prestador" | "admin"
+
+type Address = {
+  street?: string
+  city?: string
+  state?: string
+  zipCode?: string
 }
 
-// Cliente
-export type Cliente = {
-  id: string
-  email: string
-  password: string
+type SocialMedia = {
+  instagram?: string
+  facebook?: string
+  whatsapp?: string
+}
+
+type Preferences = {
+  notifications: boolean
+  emailMarketing: boolean
+  darkMode: boolean
+  language: "pt-BR" | "en-US" | "es-ES"
+}
+
+export interface Profile {
   name: string
-  phone: string
-  avatar: string
-  address: Address
-  type: "cliente"
-}
-
-// Prestador
-export type Prestador = {
-  id: string
   email: string
-  password: string
-  name: string
-  phone: string
-  avatar: string
-  address: Address
-  services: string[]
-  available: boolean
-  type: "prestador"
+  phone?: string
+  avatar?: string
+  address?: Address
+  socialMedia?: SocialMedia
+  cpf?: string
+  preferences?: Preferences
 }
 
-// Admin
-export type Admin = {
-  id: string
+export interface User {
+  id?: string
   email: string
-  password: string
   name: string
-  phone: string
-  avatar: string
-  address: Address
-  type: "admin"
+  type: UserType
+  profile?: Profile
 }
 
-export type User = Cliente | Prestador | Admin

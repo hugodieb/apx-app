@@ -3,10 +3,11 @@ import { authApi as api } from "@/lib/api-provider"
 import { useAuthStore } from "@/store/auth"
 import { useRouter } from "next/navigation"
 import type { LoginParams, RegisterParams } from "@/types/auth"
+import { User, UserType } from "@/types/user"
 import { toast } from "sonner"
 
 
-const ROUTE_DASHBOARD = {
+const ROUTE_DASHBOARD: Record<UserType, string> = {
   cliente: "/cliente/dashboard",
   prestador: "/prestador/dashboard",
   admin: "/admin/dashboard"
@@ -27,7 +28,7 @@ export function useAuth() {
       const response = await api.login(params)
       return response
     },
-    onSuccess: (user) => {
+    onSuccess: (user: User) => {
       authStore.setUser(user)
       toast.success("Login realizado com sucesso")
       const redirectRoute = ROUTE_DASHBOARD[user.type] || "/"
@@ -60,7 +61,7 @@ export function useAuth() {
       const response = await api.register(formData)
       return response
     },
-    onSuccess: (user) => {
+    onSuccess: (user: User) => {
       const redirectRoute = ROUTE_LOGIN[user.type] || "/"
       toast.success("Cadastro realizado com sucesso")
       router.push(redirectRoute)

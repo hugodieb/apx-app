@@ -1,7 +1,7 @@
 import { mockasync } from "@/lib/utils/mockasync"
 import { mockUsers } from "@/lib/mock-data"
 import { LoginParams, RegisterParams } from "@/types/auth"
-import type { User } from "@/types/user"
+import type { User, Profile } from "@/types/user"
 
 
 export const whoami = async () => {
@@ -18,9 +18,36 @@ export const login = async (params: LoginParams): Promise<User> => {
     foundUser = mockUsers.admins.find((u) => u.email === params.email && u.password === params.password)
   }
 
-  const { ...userWithoutPassword } = foundUser
+  if (foundUser) {
+    const usermock = foundUser as Partial<Profile>
 
-  return mockasync(userWithoutPassword as User);
+    const profile: Profile = {
+      name: usermock.name || "Nome não informado",
+      email: usermock.email || "Email não informado",
+      phone: usermock.phone || undefined,
+      avatar: usermock.avatar || undefined,
+      address: usermock.address || undefined,
+      socialMedia: usermock.socialMedia || undefined,
+      cpf: usermock.cpf || undefined,
+      preferences: usermock.preferences || {
+        notifications: true,
+        emailMarketing: false,
+        darkMode: false,
+        language: "pt-BR",
+      }
+    }
+
+    const { password: _, ...userWithoutPassword } = foundUser
+
+    const userWithProfile: User = {
+      ...userWithoutPassword,
+      profile,
+      type: params.type as User["type"],
+    }
+    return mockasync(userWithProfile)
+  }
+
+  throw new Error("Invalid login credentials");
 }
 
 export const logout = async () => {
@@ -29,7 +56,7 @@ export const logout = async () => {
 
 export const register = async (formData: RegisterParams): Promise<User> => {
   return mockasync(
-    { ...formData } as User
+    { ...formData, type: formData.type as User["type"] }
   )
 }
 
