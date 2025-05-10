@@ -7,7 +7,7 @@ import { User, UserType } from "@/types/user"
 import { toast } from "sonner"
 
 
-const ROUTE_DASHBOARD: Record<UserType, string> = {
+const ROUTE_DASHBOARD = {
   cliente: "/cliente/dashboard",
   prestador: "/prestador/dashboard",
   admin: "/admin/dashboard"
@@ -31,7 +31,7 @@ export function useAuth() {
     onSuccess: (user: User) => {
       authStore.setUser(user)
       toast.success("Login realizado com sucesso")
-      const redirectRoute = ROUTE_DASHBOARD[user.type] || "/"
+      const redirectRoute = ROUTE_DASHBOARD[user.profile.type] || "/"
       router.push(redirectRoute)
     },
     onError: (error: any) => {
@@ -57,12 +57,12 @@ export function useAuth() {
   })
 
   const useRegisterMutation = useMutation({
-    mutationFn: async (formData: RegisterParams) => {
-      const response = await api.register(formData)
+    mutationFn: async (formData: RegisterParams): Promise<{ type: UserType }> => {
+      const response = await api.register(formData) as { type: UserType }
       return response
     },
-    onSuccess: (user: User) => {
-      const redirectRoute = ROUTE_LOGIN[user.type] || "/"
+    onSuccess: (response: { type: UserType }) => {
+      const redirectRoute = ROUTE_LOGIN[response.type] || "/"
       toast.success("Cadastro realizado com sucesso")
       router.push(redirectRoute)
     },

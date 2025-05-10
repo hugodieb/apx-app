@@ -26,13 +26,15 @@ export const mockUsers = {
       name: "João Barbeiro",
       phone: "(11) 91234-5678",
       avatar: "/placeholder.svg?height=200&width=200",
-      profession: "Barbeiro",
+      cpf: "987.654.321-00",
       address: {
         street: "Av. Paulista, 1000",
         city: "São Paulo",
         state: "SP",
         zipCode: "01310-100",
       },
+      type: "prestador",
+      profession: "Barbeiro",
       establishmentId: "estab1", // Referência ao estabelecimento
       serviceType: "hora", // Tipo de serviço: hora, dia, serviço, projeto
       services: [
@@ -46,7 +48,6 @@ export const mockUsers = {
         facebook: "joaobarbeiro",
         whatsapp: "(11) 91234-5678",
       },
-      type: "prestador",
     },
     {
       id: "prestador2",

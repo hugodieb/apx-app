@@ -1,6 +1,6 @@
 import { apiClient } from "./client"
 import { LoginParams, RegisterParams } from "@/types/auth"
-import { User } from "@/types/user"
+import { User, UserType } from "@/types/user"
 
 
 export const login = async (params: LoginParams): Promise<User> => {
@@ -9,9 +9,9 @@ export const login = async (params: LoginParams): Promise<User> => {
 
 }
 
-export const register = async (formData: RegisterParams): Promise<User> => {
-  const response = await apiClient.post<{ user: User }>("/auth/register/", formData)
-  return response.user
+export const register = async (formData: RegisterParams): Promise<{ type: UserType }> => {
+  const response = await apiClient.post("/auth/register/", formData)
+  return response as { type: UserType }
 }
 
 export const logout = async () => {

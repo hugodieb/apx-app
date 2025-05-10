@@ -21,6 +21,7 @@ type Preferences = {
 }
 
 export interface Profile {
+  id: string
   name: string
   email: string
   phone?: string
@@ -28,14 +29,11 @@ export interface Profile {
   address?: Address
   socialMedia?: SocialMedia
   cpf?: string
-  preferences?: Preferences
+  preferences?: Preferences,
+  type: UserType
 }
 
 export interface User {
-  id?: string
-  email: string
-  name: string
-  type: UserType
-  profile?: Profile
+  profile: Profile,
 }
 

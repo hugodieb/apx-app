@@ -1,14 +1,14 @@
 import { mockasync } from "@/lib/utils/mockasync"
 import { mockUsers } from "@/lib/mock-data"
 import { LoginParams, RegisterParams } from "@/types/auth"
-import type { User, Profile } from "@/types/user"
+import type { User, Profile, UserType } from "@/types/user"
 
 
 export const whoami = async () => {
   return mockasync(mockUsers.clientes[0])
 }
 
-export const login = async (params: LoginParams): Promise<User> => {
+export const getUser = (params: LoginParams) => {
   let foundUser = null
   if (params.type === "cliente") {
     foundUser = mockUsers.clientes.find((u) => u.email === params.email && u.password === params.password)
@@ -18,31 +18,35 @@ export const login = async (params: LoginParams): Promise<User> => {
     foundUser = mockUsers.admins.find((u) => u.email === params.email && u.password === params.password)
   }
 
-  if (foundUser) {
-    const usermock = foundUser as Partial<Profile>
+  return foundUser
+}
+
+export const login = async (params: LoginParams): Promise<User> => {
+  const loggedUser = getUser(params)
+
+  if (loggedUser) {
+    const userProfile = loggedUser as Partial<Profile>
 
     const profile: Profile = {
-      name: usermock.name || "Nome não informado",
-      email: usermock.email || "Email não informado",
-      phone: usermock.phone || undefined,
-      avatar: usermock.avatar || undefined,
-      address: usermock.address || undefined,
-      socialMedia: usermock.socialMedia || undefined,
-      cpf: usermock.cpf || undefined,
-      preferences: usermock.preferences || {
+      id: userProfile.id || "ID não informado",
+      name: userProfile.name || "Nome não informado",
+      email: userProfile.email || "Email não informado",
+      phone: userProfile.phone || "Telefone não informado",
+      avatar: userProfile.avatar || undefined,
+      address: userProfile.address || undefined,
+      socialMedia: userProfile.socialMedia || undefined,
+      cpf: userProfile.cpf || undefined,
+      preferences: userProfile.preferences || {
         notifications: true,
         emailMarketing: false,
         darkMode: false,
         language: "pt-BR",
-      }
+      },
+      type: userProfile.type as UserType || "cliente",
     }
 
-    const { password: _, ...userWithoutPassword } = foundUser
-
     const userWithProfile: User = {
-      ...userWithoutPassword,
       profile,
-      type: params.type as User["type"],
     }
     return mockasync(userWithProfile)
   }
@@ -54,9 +58,13 @@ export const logout = async () => {
   return mockasync({})
 }
 
-export const register = async (formData: RegisterParams): Promise<User> => {
-  return mockasync(
-    { ...formData, type: formData.type as User["type"] }
-  )
-}
+export const register = async (formData: RegisterParams) => {
+  const { name, email, password, type } = formData
 
+  return mockasync({
+    type,
+  })
+
+  throw new Error("Invalid register credentials");
+
+}
