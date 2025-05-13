@@ -8,7 +8,6 @@ export const mockUsers = {
       name: "Maria Silva",
       phone: "(11) 98765-4321",
       avatar: "/placeholder.svg?height=200&width=200",
-      cpf: "123.456.789-00",
       address: {
         street: "Rua das Flores, 123",
         city: "São Paulo",
@@ -26,15 +25,13 @@ export const mockUsers = {
       name: "João Barbeiro",
       phone: "(11) 91234-5678",
       avatar: "/placeholder.svg?height=200&width=200",
-      cpf: "987.654.321-00",
+      profession: "Barbeiro",
       address: {
         street: "Av. Paulista, 1000",
         city: "São Paulo",
         state: "SP",
         zipCode: "01310-100",
       },
-      type: "prestador",
-      profession: "Barbeiro",
       establishmentId: "estab1", // Referência ao estabelecimento
       serviceType: "hora", // Tipo de serviço: hora, dia, serviço, projeto
       services: [
@@ -42,12 +39,25 @@ export const mockUsers = {
         { id: "s2", name: "Barba", price: 30, duration: 20 },
         { id: "s3", name: "Corte + Barba", price: 70, duration: 45 },
       ],
+      preferences: {
+        notifications: false,
+        emailMarketing: false,
+        darkMode: false,
+        language: "pt-BR"
+      },
+      settings: {
+        serviceType: "",
+        autoAcceptBookings: false,
+        advanceBookingDays: false,
+        cancellationPolicy: ""
+      },
       rating: 4.8,
       socialMedia: {
         instagram: "@joaobarbeiro",
         facebook: "joaobarbeiro",
         whatsapp: "(11) 91234-5678",
       },
+      type: "prestador",
     },
     {
       id: "prestador2",
@@ -70,6 +80,18 @@ export const mockUsers = {
         { id: "s5", name: "Barba Completa", price: 35, duration: 25 },
         { id: "s6", name: "Pacote Completo", price: 85, duration: 60 },
       ],
+      preferences: {
+        notifications: false,
+        emailMarketing: false,
+        darkMode: false,
+        language: "pt-BR"
+      },
+      settings: {
+        serviceType: "",
+        autoAcceptBookings: false,
+        advanceBookingDays: false,
+        cancellationPolicy: ""
+      },
       rating: 4.6,
       socialMedia: {
         instagram: "@pedrobarbeiro",
@@ -99,6 +121,18 @@ export const mockUsers = {
         { id: "s8", name: "Limpeza Comercial", price: 200, duration: 480 },
         { id: "s9", name: "Limpeza Pós-Obra", price: 300, duration: 960 }, // 16 horas (2 dias)
       ],
+      preferences: {
+        notifications: false,
+        emailMarketing: false,
+        darkMode: false,
+        language: "pt-BR"
+      },
+      settings: {
+        serviceType: "",
+        autoAcceptBookings: false,
+        advanceBookingDays: false,
+        cancellationPolicy: ""
+      },
       rating: 4.9,
       socialMedia: {
         instagram: "@analimpeza",
@@ -127,6 +161,18 @@ export const mockUsers = {
         { id: "s11", name: "Troca de Disjuntores", price: 120, duration: 90 },
         { id: "s12", name: "Instalação de Ventilador", price: 150, duration: 120 },
       ],
+      preferences: {
+        notifications: false,
+        emailMarketing: false,
+        darkMode: false,
+        language: "pt-BR"
+      },
+      settings: {
+        serviceType: "",
+        autoAcceptBookings: false,
+        advanceBookingDays: false,
+        cancellationPolicy: ""
+      },
       rating: 4.7,
       socialMedia: {
         facebook: "carloseletricista",
@@ -155,6 +201,18 @@ export const mockUsers = {
         { id: "s14", name: "Laudo Técnico", price: 1500, duration: 2880 }, // 2 dias (48 horas)
         { id: "s15", name: "Consultoria", price: 800, duration: 120 }, // 2 horas
       ],
+      preferences: {
+        notifications: false,
+        emailMarketing: false,
+        darkMode: false,
+        language: "pt-BR"
+      },
+      settings: {
+        serviceType: "",
+        autoAcceptBookings: false,
+        advanceBookingDays: false,
+        cancellationPolicy: ""
+      },
       rating: 4.9,
       socialMedia: {
         instagram: "@robertoengenheiro",
@@ -163,6 +221,43 @@ export const mockUsers = {
       },
       type: "prestador",
     },
+    {
+      id: "prestador6",
+      email: "patolino@example.com",
+      password: "Prestador123",
+      name: "Patolino",
+      phone: "(11) 96789-0123",
+      avatar: "/placeholder.svg?height=200&width=200",
+      profession: "Carpinteiro",
+      address: {
+        street: "Rua das Palmeiras, 456",
+        city: "São Paulo",
+        state: "SP",
+        zipCode: "01234-567",
+      },
+      establishmentId: "",
+      serviceType: "",
+      services: [],
+      preferences: {
+        notifications: false,
+        emailMarketing: false,
+        darkMode: false,
+        language: ""
+      },
+      settings: {
+        serviceType: "",
+        autoAcceptBookings: false,
+        advanceBookingDays: false,
+        cancellationPolicy: ""
+      },
+      rating: 4.9,
+      socialMedia: {
+        instagram: "",
+        facebook: "",
+        whatsapp: "",
+      },
+      type: "prestador",
+    }
   ],
   admins: [
     {
@@ -263,6 +358,30 @@ export const mockEstablishments = [
     phone: "(11) 3456-7892",
     image: "/placeholder.svg?height=400&width=600",
     category: "Engenharia",
+    rating: 4.9,
+    openingHours: {
+      monday: { open: "09:00", close: "18:00" },
+      tuesday: { open: "09:00", close: "18:00" },
+      wednesday: { open: "09:00", close: "18:00" },
+      thursday: { open: "09:00", close: "18:00" },
+      friday: { open: "09:00", close: "18:00" },
+      saturday: { open: "", close: "" }, // Fechado
+      sunday: { open: "", close: "" }, // Fechado
+    },
+  },
+  {
+    id: "estab6",
+    name: "Reparo de Móveis",
+    description: "Reparos e Reforma de Móveis",
+    address: {
+      street: "Av. Rebouças, 1200",
+      city: "São Paulo",
+      state: "SP",
+      zipCode: "05402-000",
+    },
+    phone: "(11) 3456-7892",
+    image: "/placeholder.svg?height=400&width=600",
+    category: "Carpintaria",
     rating: 4.9,
     openingHours: {
       monday: { open: "09:00", close: "18:00" },

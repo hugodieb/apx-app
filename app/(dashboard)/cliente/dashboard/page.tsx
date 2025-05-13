@@ -14,17 +14,17 @@ export default function ClienteDashboardPage() {
   const { user, isAuthenticated } = useAuthStore()
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
+    if (!isAuthenticated || user?.profile?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || user?.type !== "cliente") {
+  if (!isAuthenticated || user?.profile?.type !== "cliente") {
     return null
   }
 
   // Filtrar agendamentos do cliente atual
-  const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user.id)
+  const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user.profile?.id)
 
   // Ordenar por data (próximos primeiro)
   const sortedAppointments = [...clientAppointments].sort(
@@ -39,7 +39,7 @@ export default function ClienteDashboardPage() {
   return (
     <ClienteLayout>
       <div className="p-4 md:p-6">
-        <h1 className="text-2xl font-bold mb-6">Olá, {user.name}!</h1>
+        <h1 className="text-2xl font-bold mb-6">Olá, {user.profile?.name}!</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-slate-800 border-slate-700">

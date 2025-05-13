@@ -18,6 +18,43 @@ type Preferences = {
   emailMarketing: boolean
   darkMode: boolean
   language: "pt-BR" | "en-US" | "es-ES"
+
+}
+
+type ServiceSettings = {
+  service: {
+    serviceType?: "hora" | "dia" | "servico" | "projeto"
+    autoAcceptBookings?: boolean
+    advanceBookingDays?: string
+    cancellationPolicy?: "flexivel" | "moderada" | "rigorosa"
+  }
+}
+
+export interface Settings {
+  changePassword: {
+    currentPassword: string
+    newPassword: string
+    confirmPassword: string
+  }
+  preferences: {
+    notifications: boolean
+    emailMarketing: boolean
+    darkMode: boolean
+    language: "pt-BR" | "en-US" | "es-ES"
+  }
+  services: {
+    serviceType?: "hora" | "dia" | "servico" | "projeto"
+    autoAcceptBookings?: boolean
+    advanceBookingDays?: string
+    cancellationPolicy?: "flexivel" | "moderada" | "rigorosa"
+  }
+}
+
+export interface Services {
+  id: string
+  name: string
+  price: number
+  duration: number
 }
 
 export interface Profile {
@@ -25,15 +62,19 @@ export interface Profile {
   name: string
   email: string
   phone?: string
+  cpf?: string
+  gender?: "masculino" | "feminino" | "outro" | "prefiro_nao_informar"
   avatar?: string
+  profession?: string
+  bio: string
+  birthDate?: string
   address?: Address
   socialMedia?: SocialMedia
-  cpf?: string
-  preferences?: Preferences,
   type: UserType
 }
 
 export interface User {
-  profile: Profile,
+  settings?: Settings
+  profile?: Profile,
+  services?: Services[]
 }
-

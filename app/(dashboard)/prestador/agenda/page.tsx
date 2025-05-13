@@ -18,12 +18,12 @@ export default function PrestadorAgendaPage() {
   const [activeTab, setActiveTab] = useState("agenda")
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
+    if (!isAuthenticated || user?.profile.type !== "prestador") {
       router.push("/prestador/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || user?.type !== "prestador") {
+  if (!isAuthenticated || user?.profile.type !== "prestador") {
     return null
   }
 

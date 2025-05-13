@@ -18,17 +18,17 @@ export default function ClienteAgendamentosPage() {
   const [activeTab, setActiveTab] = useState("proximos")
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
+    if (!isAuthenticated || user?.profile?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || user?.type !== "cliente") {
+  if (!isAuthenticated || user?.profile?.type !== "cliente") {
     return null
   }
 
   // Filtrar agendamentos do cliente atual
-  const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user.id)
+  const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user.profile?.id)
 
   // Separar agendamentos por status
   const proximosAgendamentos = clientAppointments

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { useAuthStore, useServicesStore } from "@/store/auth"
 import { mockAppointments } from "@/lib/mock-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,20 +12,21 @@ import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layo
 export default function PrestadorDashboardPage() {
   const router = useRouter()
   const { user, isAuthenticated } = useAuthStore()
+  const { services } = useServicesStore()
 
   useEffect(() => {
     debugger
-    if (!isAuthenticated || user?.type !== "prestador") {
+    if (!isAuthenticated || user?.profile?.type !== "prestador") {
       router.push("/prestador/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || user?.type !== "prestador") {
+  if (!isAuthenticated || user?.profile?.type !== "prestador") {
     return null
   }
 
   // Filtrar agendamentos do prestador atual
-  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user.id)
+  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user.profile?.id)
 
   // Ordenar por data (próximos primeiro)
   const sortedAppointments = [...providerAppointments].sort(
@@ -44,7 +45,7 @@ export default function PrestadorDashboardPage() {
   return (
     <PrestadorLayout>
       <div className="p-4 md:p-6">
-        <h1 className="text-2xl font-bold mb-6">Olá, {user.name}!</h1>
+        <h1 className="text-2xl font-bold mb-6">Olá, {user.profile.name}!</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="bg-slate-800 border-slate-700">
@@ -214,7 +215,7 @@ export default function PrestadorDashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {user.services?.map((service, index) => (
+                {services?.map((service, index) => (
                   <div key={index} className="p-3 bg-slate-700 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-medium">{service.name}</h3>

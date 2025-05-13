@@ -46,7 +46,7 @@ export default function ClientePerfilPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
+    if (!isAuthenticated || user?.profile?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
@@ -54,18 +54,18 @@ export default function ClientePerfilPage() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.profile.name || "",
-      email: user?.profile.email || "",
-      phone: user?.profile.phone || "",
-      bio: user?.profile.bio || "",
-      birthDate: user?.profile.birthDate || "",
-      cpf: user?.profile.cpf || "",
-      gender: user?.profile.gender || "prefiro_nao_informar",
+      name: user?.profile?.name || "",
+      email: user?.profile?.email || "",
+      phone: user?.profile?.phone || "",
+      bio: user?.profile?.bio || "",
+      birthDate: user?.profile?.birthDate || "",
+      cpf: user?.profile?.cpf || "",
+      gender: user?.profile?.gender || "prefiro_nao_informar",
       address: {
-        street: user?.profile.address?.street || "",
-        city: user?.profile.address?.city || "",
-        state: user?.profile.address?.state || "",
-        zipCode: user?.profile.address?.zipCode || "",
+        street: user?.profile?.address?.street || "",
+        city: user?.profile?.address?.city || "",
+        state: user?.profile?.address?.state || "",
+        zipCode: user?.profile?.address?.zipCode || "",
       },
     },
   })
@@ -90,7 +90,7 @@ export default function ClientePerfilPage() {
     }
   }
 
-  if (!isAuthenticated || user?.type !== "cliente") {
+  if (!isAuthenticated || user?.profile?.type !== "cliente") {
     return null
   }
 
@@ -133,7 +133,7 @@ export default function ClientePerfilPage() {
                         <Avatar className="h-24 w-24">
                           <AvatarImage
                             src={user.profile.avatar || "/placeholder.svg?height=96&width=96"}
-                            alt={user.name}
+                            alt={user.profile.name}
                           />
                           <AvatarFallback className="bg-orange-500 text-white text-xl">
                             <User className="h-12 w-12" />

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { authApi as api } from "@/lib/api-provider"
-import { useAuthStore } from "@/store/auth"
+import { useAuthStore, useSettingsStore, useServicesStore } from "@/store/auth"
 import { useRouter } from "next/navigation"
 import type { LoginParams, RegisterParams } from "@/types/auth"
 import { User, UserType } from "@/types/user"
@@ -30,8 +30,11 @@ export function useAuth() {
     },
     onSuccess: (user: User) => {
       authStore.setUser(user)
+      useSettingsStore.getState().setPreferences(user.settings?.preferences || {})
+      useSettingsStore.getState().setServices(user.settings?.services || {})
+      useServicesStore.getState().setServices(user.services || [])
       toast.success("Login realizado com sucesso")
-      const redirectRoute = ROUTE_DASHBOARD[user.profile.type] || "/"
+      const redirectRoute = ROUTE_DASHBOARD[user.profile?.type ?? "cliente"] || "/"
       router.push(redirectRoute)
     },
     onError: (error: any) => {
@@ -62,7 +65,7 @@ export function useAuth() {
       return response
     },
     onSuccess: (response: { type: UserType }) => {
-      const redirectRoute = ROUTE_LOGIN[response.type] || "/"
+      const redirectRoute = ROUTE_DASHBOARD[response.type] || "/"
       toast.success("Cadastro realizado com sucesso")
       router.push(redirectRoute)
     },

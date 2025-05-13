@@ -18,6 +18,7 @@ import {
   X,
   Scissors,
   Bell,
+  Building,
 } from "lucide-react"
 
 interface PrestadorLayoutProps {
@@ -32,6 +33,7 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   const navigation = [
     { name: "Dashboard", href: "/prestador/dashboard", icon: Home },
     { name: "Agenda", href: "/prestador/agenda", icon: Calendar },
+    { name: "Estabelecimento", href: "/prestador/estabelecimento/novo", icon: Building },
     { name: "Serviços", href: "/prestador/servicos", icon: Scissors },
     { name: "Avaliações", href: "/prestador/avaliacoes", icon: Star },
     { name: "Chat", href: "/prestador/chat", icon: MessageSquare },

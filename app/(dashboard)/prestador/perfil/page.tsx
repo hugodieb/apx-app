@@ -54,7 +54,7 @@ export default function PrestadorPerfilPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
+    if (!isAuthenticated || user?.profile?.type !== "prestador") {
       router.push("/prestador/login")
     }
   }, [isAuthenticated, user, router])
@@ -62,24 +62,24 @@ export default function PrestadorPerfilPage() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.profile.name || "",
-      email: user?.profile.email || "",
-      phone: user?.profile.phone || "",
-      bio: user?.profile.bio || "",
-      profession: user?.profession || "",
-      birthDate: user?.profile.birthDate || "",
-      cpf: user?.profile.cpf || "",
-      gender: user?.profile.gender || "prefiro_nao_informar",
+      name: user?.profile?.name || "",
+      email: user?.profile?.email || "",
+      phone: user?.profile?.phone || "",
+      bio: user?.profile?.bio || "",
+      profession: user?.profile?.profession || "",
+      birthDate: user?.profile?.birthDate || "",
+      cpf: user?.profile?.cpf || "",
+      gender: user?.profile?.gender || "prefiro_nao_informar",
       address: {
-        street: user?.profile.address?.street || "",
-        city: user?.profile.address?.city || "",
-        state: user?.profile.address?.state || "",
-        zipCode: user?.profile.address?.zipCode || "",
+        street: user?.profile?.address?.street || "",
+        city: user?.profile?.address?.city || "",
+        state: user?.profile?.address?.state || "",
+        zipCode: user?.profile?.address?.zipCode || "",
       },
       socialMedia: {
-        instagram: user?.profile.socialMedia?.instagram || "",
-        facebook: user?.profile.socialMedia?.facebook || "",
-        whatsapp: user?.profile.socialMedia?.whatsapp || "",
+        instagram: user?.profile?.socialMedia?.instagram || "",
+        facebook: user?.profile?.socialMedia?.facebook || "",
+        whatsapp: user?.profile?.socialMedia?.whatsapp || "",
       },
     },
   })
@@ -107,7 +107,7 @@ export default function PrestadorPerfilPage() {
     }
   }
 
-  if (!isAuthenticated || user?.type !== "prestador") {
+  if (!isAuthenticated || user?.profile?.type !== "prestador") {
     return null
   }
 
@@ -151,7 +151,7 @@ export default function PrestadorPerfilPage() {
                         <Avatar className="h-24 w-24">
                           <AvatarImage
                             src={user.profile.avatar || "/placeholder.svg?height=96&width=96"}
-                            alt={user.name}
+                            alt={user.profile.name}
                           />
                           <AvatarFallback className="bg-blue-700 text-white text-xl">
                             <User className="h-12 w-12" />

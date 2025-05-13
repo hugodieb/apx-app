@@ -48,7 +48,7 @@ export default function ClienteConfiguracoesPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
+    if (!isAuthenticated || user?.profile?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
@@ -65,10 +65,10 @@ export default function ClienteConfiguracoesPage() {
   const preferencesForm = useForm<PreferencesFormValues>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      notifications: user?.profile.preferences?.notifications ?? true,
-      emailMarketing: user?.profile.preferences?.emailMarketing ?? false,
-      darkMode: user?.profile.preferences?.darkMode ?? false,
-      language: user?.profile.preferences?.language ?? "pt-BR",
+      notifications: user?.settings?.preferences.notifications ?? true,
+      emailMarketing: user?.settings?.preferences.emailMarketing ?? false,
+      darkMode: user?.settings?.preferences.darkMode ?? false,
+      language: user?.settings?.preferences.language ?? "pt-BR",
     },
   })
 
@@ -105,7 +105,7 @@ export default function ClienteConfiguracoesPage() {
     }
   }
 
-  if (!isAuthenticated || user?.type !== "cliente") {
+  if (!isAuthenticated || user?.profile?.type !== "cliente") {
     return null
   }
 

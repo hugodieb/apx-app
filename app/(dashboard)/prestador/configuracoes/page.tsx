@@ -50,7 +50,7 @@ type ServiceSettingsFormValues = z.infer<typeof serviceSettingsSchema>
 
 export default function PrestadorConfiguracoesPage() {
   const router = useRouter()
-  const { user, isAuthenticated, updateSettings } = useAuthStore()
+  const { user, isAuthenticated, } = useAuthStore()
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false)
   const [isSubmittingPreferences, setIsSubmittingPreferences] = useState(false)
   const [isSubmittingServiceSettings, setIsSubmittingServiceSettings] = useState(false)
@@ -58,7 +58,7 @@ export default function PrestadorConfiguracoesPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
+    if (!isAuthenticated || user?.profile?.type !== "prestador") {
       router.push("/prestador/login")
     }
   }, [isAuthenticated, user, router])
@@ -75,20 +75,20 @@ export default function PrestadorConfiguracoesPage() {
   const preferencesForm = useForm<PreferencesFormValues>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      notifications: user?.profile.preferences?.notifications ?? true,
-      emailMarketing: user?.profile.preferences?.emailMarketing ?? false,
-      darkMode: user?.profile.preferences?.darkMode ?? false,
-      language: user?.profile.preferences?.language ?? "pt-BR",
+      notifications: user?.settings?.preferences.notifications ?? true,
+      emailMarketing: user?.settings?.preferences?.emailMarketing ?? false,
+      darkMode: user?.settings?.preferences?.darkMode ?? false,
+      language: user?.settings?.preferences?.language ?? "pt-BR",
     },
   })
 
   const serviceSettingsForm = useForm<ServiceSettingsFormValues>({
     resolver: zodResolver(serviceSettingsSchema),
     defaultValues: {
-      serviceType: user?.serviceType || "hora",
-      autoAcceptBookings: user?.autoAcceptBookings || false,
-      advanceBookingDays: user?.advanceBookingDays?.toString() || "30",
-      cancellationPolicy: user?.cancellationPolicy || "moderada",
+      serviceType: user?.settings?.services?.serviceType || "hora",
+      autoAcceptBookings: user?.settings?.services?.autoAcceptBookings || false,
+      advanceBookingDays: user?.settings?.services?.advanceBookingDays || "30",
+      cancellationPolicy: user?.settings?.services?.cancellationPolicy || "moderada",
     },
   })
 
@@ -112,7 +112,7 @@ export default function PrestadorConfiguracoesPage() {
     setErrorMessage(null)
 
     try {
-      updateSettings({ ...data, language: data.language as Language })
+      //updateSettings({ ...data, language: data.language as Language })
 
       setSuccessMessage("Preferências atualizadas com sucesso!")
 
@@ -143,7 +143,7 @@ export default function PrestadorConfiguracoesPage() {
     }
   }
 
-  if (!isAuthenticated || user?.type !== "prestador") {
+  if (!isAuthenticated || user?.profile?.type !== "prestador") {
     return null
   }
 
