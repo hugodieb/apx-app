@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { useAuthStore } from "@/store/auth"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, Home, LogOut, Menu, MessageSquare, Search, Settings, User, X } from "lucide-react"
+import { useAuth } from "@/hooks/useAuth"
 
 interface ClienteLayoutProps {
   children: ReactNode
@@ -13,7 +14,8 @@ interface ClienteLayoutProps {
 
 export function ClienteLayout({ children }: ClienteLayoutProps) {
   const pathname = usePathname()
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
+  const { logout } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const navigation = [
@@ -25,6 +27,10 @@ export function ClienteLayout({ children }: ClienteLayoutProps) {
     { name: "Perfil", href: "/cliente/perfil", icon: User },
     { name: "Configurações", href: "/cliente/configuracoes", icon: Settings },
   ]
+
+  function logoutForm() {
+    logout()
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
@@ -62,7 +68,7 @@ export function ClienteLayout({ children }: ClienteLayoutProps) {
               })}
               <button
                 onClick={() => {
-                  logout()
+                  logoutForm()
                   setIsSidebarOpen(false)
                 }}
                 className="flex items-center px-3 py-2 mt-4 text-slate-300 hover:bg-slate-700 rounded-md"
@@ -112,7 +118,9 @@ export function ClienteLayout({ children }: ClienteLayoutProps) {
                   </div>
                 </div>
                 <Button
-                  onClick={logout}
+                  onClick={() => {
+                    logoutForm()
+                  }}
                   variant="outline"
                   className="w-full border-slate-700 text-slate-300 hover:bg-slate-700"
                 >

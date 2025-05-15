@@ -8,6 +8,8 @@ export const mockUsers = {
       name: "Maria Silva",
       phone: "(11) 98765-4321",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Amo cuidar do meu cabelo e sempre busco os melhores serviços.",
+      gender: "feminino",
       address: {
         street: "Rua das Flores, 123",
         city: "São Paulo",
@@ -25,6 +27,7 @@ export const mockUsers = {
       name: "João Barbeiro",
       phone: "(11) 91234-5678",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Barbeiro com 10 anos de experiência em cortes e barbas.",
       profession: "Barbeiro",
       address: {
         street: "Av. Paulista, 1000",
@@ -66,6 +69,7 @@ export const mockUsers = {
       name: "Pedro Barbeiro",
       phone: "(11) 92345-6789",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Barbeiro especializado em cortes modernos e tradicionais.",
       profession: "Barbeiro",
       address: {
         street: "Av. Paulista, 1000",
@@ -107,6 +111,7 @@ export const mockUsers = {
       name: "Ana Limpeza",
       phone: "(11) 93456-7890",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Profissional de limpeza com 5 anos de experiência em serviços residenciais e comerciais.",
       profession: "Faxineira",
       address: {
         street: "Rua Augusta, 500",
@@ -147,6 +152,7 @@ export const mockUsers = {
       name: "Carlos Eletricista",
       phone: "(11) 94567-8901",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Eletricista com 8 anos de experiência em instalações e reparos elétricos.",
       profession: "Eletricista",
       address: {
         street: "Rua Consolação, 800",
@@ -187,6 +193,7 @@ export const mockUsers = {
       name: "Roberto Engenheiro",
       phone: "(11) 95678-9012",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Engenheiro civil com 12 anos de experiência em projetos e consultorias.",
       profession: "Engenheiro Civil",
       address: {
         street: "Av. Rebouças, 1200",
@@ -228,6 +235,7 @@ export const mockUsers = {
       name: "Patolino",
       phone: "(11) 96789-0123",
       avatar: "/placeholder.svg?height=200&width=200",
+      bio: "Carpinteiro com 5 anos de experiência em reformas e reparos.",
       profession: "Carpinteiro",
       address: {
         street: "Rua das Palmeiras, 456",

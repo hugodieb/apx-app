@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { useClienteAuth } from "@/store/auth"
 import { ClienteLayout } from "@/components/dashboard/cliente/cliente-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -40,13 +40,14 @@ type ProfileFormValues = z.infer<typeof profileSchema>
 
 export default function ClientePerfilPage() {
   const router = useRouter()
-  const { user, isAuthenticated, updateProfile } = useAuthStore()
+  const { user, isAuthenticated, updateProfile } = useClienteAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.profile?.type !== "cliente") {
+    debugger
+    if (!isAuthenticated || user?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
@@ -54,18 +55,18 @@ export default function ClientePerfilPage() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.profile?.name || "",
-      email: user?.profile?.email || "",
-      phone: user?.profile?.phone || "",
-      bio: user?.profile?.bio || "",
-      birthDate: user?.profile?.birthDate || "",
-      cpf: user?.profile?.cpf || "",
-      gender: user?.profile?.gender || "prefiro_nao_informar",
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: user?.name || "",
+      bio: user?.bio || "",
+      birthDate: user?.birthDate || "",
+      cpf: user?.cpf || "",
+      gender: user?.gender || 'prefiro_nao_informar',
       address: {
-        street: user?.profile?.address?.street || "",
-        city: user?.profile?.address?.city || "",
-        state: user?.profile?.address?.state || "",
-        zipCode: user?.profile?.address?.zipCode || "",
+        street: user?.address.street || "",
+        city: user?.address?.city || "",
+        state: user?.address?.state || "",
+        zipCode: user?.address?.zipCode || "",
       },
     },
   })
@@ -90,7 +91,7 @@ export default function ClientePerfilPage() {
     }
   }
 
-  if (!isAuthenticated || user?.profile?.type !== "cliente") {
+  if (!isAuthenticated || user?.type !== "cliente") {
     return null
   }
 
@@ -132,8 +133,8 @@ export default function ClientePerfilPage() {
                       <div className="relative mb-4">
                         <Avatar className="h-24 w-24">
                           <AvatarImage
-                            src={user.profile.avatar || "/placeholder.svg?height=96&width=96"}
-                            alt={user.profile.name}
+                            src={user.avatar || "/placeholder.svg?height=96&width=96"}
+                            alt={user.name}
                           />
                           <AvatarFallback className="bg-orange-500 text-white text-xl">
                             <User className="h-12 w-12" />
@@ -226,7 +227,7 @@ export default function ClientePerfilPage() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Gênero</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
                               <FormControl>
                                 <SelectTrigger className="bg-slate-700 border-slate-600">
                                   <SelectValue placeholder="Selecione seu gênero" />

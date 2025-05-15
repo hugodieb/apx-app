@@ -1,87 +1,59 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { authApi as api } from "@/lib/api-provider"
-import { useAuthStore, useSettingsStore, useServicesStore } from "@/store/auth"
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from "next/navigation"
-import type { LoginParams, RegisterParams } from "@/types/auth"
-import { User, UserType } from "@/types/user"
 import { toast } from "sonner"
-
-
-const ROUTE_DASHBOARD = {
-  cliente: "/cliente/dashboard",
-  prestador: "/prestador/dashboard",
-  admin: "/admin/dashboard"
-}
-
-const ROUTE_LOGIN = {
-  cliente: "/cliente/login",
-  prestador: "/prestador/login",
-  admin: "/admin/login"
-}
+import { User, ROUTE_DASHBOARD, ClienteUser, PrestadorUser, AdminUser } from '@/types/user';
+import { authApi as api } from '@/lib/api-provider';
+import { LoginParams } from '@/types/auth';
+import { useAuthStore } from '@/store/auth';
 
 export function useAuth() {
-  const router = useRouter()
-  const authStore = useAuthStore.getState()
+  const router = useRouter();
+  const authStore = useAuthStore.getState();
 
   const loginMutation = useMutation({
     mutationFn: async (params: LoginParams) => {
-      const response = await api.login(params)
-      return response
+      const response = await api.login(params);
+      return response;
     },
     onSuccess: (user: User) => {
-      authStore.setUser(user)
-      useSettingsStore.getState().setPreferences(user.settings?.preferences || {})
-      useSettingsStore.getState().setServices(user.settings?.services || {})
-      useServicesStore.getState().setServices(user.services || [])
-      toast.success("Login realizado com sucesso")
-      const redirectRoute = ROUTE_DASHBOARD[user.profile?.type ?? "cliente"] || "/"
-      router.push(redirectRoute)
+      switch (user.type) {
+        case 'cliente':
+          authStore.setClienteUser(user as ClienteUser);
+          break;
+        case 'prestador':
+          authStore.setPrestadorUser(user as PrestadorUser);
+          break;
+        case 'admin':
+          authStore.setAdminUser(user as AdminUser);
+          break;
+      }
+
+      toast.success('Login realizado com sucesso');
+      const redirectRoute = ROUTE_DASHBOARD[user.type];
+      router.push(redirectRoute);
     },
     onError: (error: any) => {
-      authStore.logout()
-      toast.error("Usuário e ou senha errados.")
+      toast.error('Usuário e/ou senha incorretos.');
     },
-  })
+  });
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.logout()
+      const response = await api.logout();
       return response
     },
     onSuccess: () => {
-      authStore.logout()
-      toast.success("Logout realizado com sucesso")
-      router.push("/")
+      authStore.logout();
+      toast.success('Até breve...');
     },
-    onError: (error: any) => {
-      authStore.logout()
-      toast.error("Erro ao fazer logout")
-    },
-  })
-
-  const useRegisterMutation = useMutation({
-    mutationFn: async (formData: RegisterParams): Promise<{ type: UserType }> => {
-      const response = await api.register(formData) as { type: UserType }
-      return response
-    },
-    onSuccess: (response: { type: UserType }) => {
-      const redirectRoute = ROUTE_DASHBOARD[response.type] || "/"
-      toast.success("Cadastro realizado com sucesso")
-      router.push(redirectRoute)
-    },
-    onError: (error: any) => {
-      toast.error("Erro ao realizar cadastro")
+    onError: (error) => {
+      toast.error("Algo deu errado, se possível contate o administrador.");
     }
   })
 
   return {
     login: loginMutation.mutate,
-    logout: logoutMutation.mutate,
-    register: useRegisterMutation.mutate,
+    logout: logoutMutation.mutate
   }
-}
-
-
-
-
+};
 

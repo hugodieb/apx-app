@@ -47,8 +47,7 @@ export function LoginForm({ type, title, redirectToLogin, backLink = "/" }: Prop
     try {
       login({
         email: data.email,
-        password: data.password,
-        type: type
+        password: data.password
       })
     } catch (err) {
       console.log(err)
