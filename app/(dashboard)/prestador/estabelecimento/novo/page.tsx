@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useAuthStore } from "@/store/auth"
+import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -67,7 +67,7 @@ const categories = [
 
 export default function NovoEstabelecimentoPage() {
   const router = useRouter()
-  const { user } = useAuthStore()
+  const { user } = usePrestadorAuth()
   const [activeTab, setActiveTab] = useState("informacoes")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -76,12 +76,12 @@ export default function NovoEstabelecimentoPage() {
     name: "",
     description: "",
     category: "",
-    phone: user?.profile.phone || "",
+    phone: user?.phone || "",
     image: "/placeholder.svg?height=400&width=600",
-    street: user?.profile.address?.street || "",
-    city: user?.profile.address?.city || "",
-    state: user?.profile.address?.state || "",
-    zipCode: user?.profile.address?.zipCode || "",
+    street: user?.address?.street || "",
+    city: user?.address?.city || "",
+    state: user?.address?.state || "",
+    zipCode: user?.address?.zipCode || "",
     mondayOpen: "09:00",
     mondayClose: "18:00",
     tuesdayOpen: "09:00",

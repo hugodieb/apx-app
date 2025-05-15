@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,7 +13,7 @@ import { toast } from "@/components/ui/use-toast"
 
 export default function DetalhesEstabelecimentoPage() {
   const router = useRouter()
-  const { user } = useAuthStore()
+  const { user } = usePrestadorAuth()
   const [isLoading, setIsLoading] = useState(true)
 
   // Simulando o carregamento de dados do estabelecimento

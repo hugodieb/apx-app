@@ -15,7 +15,7 @@ export const login = async (params: LoginParams): Promise<User> => {
     );
 
     if (user) {
-      foundUser = user as unknown as User;
+      foundUser = user as User;
       break;
     }
   }
@@ -23,7 +23,7 @@ export const login = async (params: LoginParams): Promise<User> => {
   if (!foundUser) {
     return mockasync<User>(null as unknown as User) as Promise<User>;
   }
-  debugger
+
   const { password: _, ...userWithoutPassword } = foundUser as any;
 
   return mockasync<User>(userWithoutPassword as User);
@@ -33,10 +33,7 @@ export const logout = async (): Promise<void> => {
   return mockasync<void>(undefined)
 }
 
-// Logout
-// logout: async (): Promise<void> => {
-//   return mockAsync<void>(undefined);
-// },
+
 //
 //   // Registro de cliente
 //   registerCliente: async (data: RegisterClienteData): Promise<RegisterResponse> => {

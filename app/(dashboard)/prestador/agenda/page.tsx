@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -13,17 +13,17 @@ import { BloqueioHorarios } from "@/components/dashboard/prestador/bloqueio-hora
 
 export default function PrestadorAgendaPage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated } = usePrestadorAuth()
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [activeTab, setActiveTab] = useState("agenda")
 
   useEffect(() => {
-    if (!isAuthenticated || user?.profile.type !== "prestador") {
+    if (!isAuthenticated || user?.type !== "prestador") {
       router.push("/prestador/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || user?.profile.type !== "prestador") {
+  if (!isAuthenticated || user?.type !== "prestador") {
     return null
   }
 

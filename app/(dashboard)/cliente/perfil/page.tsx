@@ -46,7 +46,6 @@ export default function ClientePerfilPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    debugger
     if (!isAuthenticated || user?.type !== "cliente") {
       router.push("/cliente/login")
     }

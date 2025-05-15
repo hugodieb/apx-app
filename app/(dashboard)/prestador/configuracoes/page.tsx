@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -50,7 +50,7 @@ type ServiceSettingsFormValues = z.infer<typeof serviceSettingsSchema>
 
 export default function PrestadorConfiguracoesPage() {
   const router = useRouter()
-  const { user, isAuthenticated, } = useAuthStore()
+  const { user, isAuthenticated, updatePrefences } = usePrestadorAuth()
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false)
   const [isSubmittingPreferences, setIsSubmittingPreferences] = useState(false)
   const [isSubmittingServiceSettings, setIsSubmittingServiceSettings] = useState(false)
@@ -58,7 +58,7 @@ export default function PrestadorConfiguracoesPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.profile?.type !== "prestador") {
+    if (!isAuthenticated || user?.type !== "prestador") {
       router.push("/prestador/login")
     }
   }, [isAuthenticated, user, router])
@@ -75,20 +75,20 @@ export default function PrestadorConfiguracoesPage() {
   const preferencesForm = useForm<PreferencesFormValues>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      notifications: user?.settings?.preferences.notifications ?? true,
-      emailMarketing: user?.settings?.preferences?.emailMarketing ?? false,
-      darkMode: user?.settings?.preferences?.darkMode ?? false,
-      language: user?.settings?.preferences?.language ?? "pt-BR",
+      notifications: user?.preferences.notifications ?? true,
+      emailMarketing: user?.preferences?.emailMarketing ?? false,
+      darkMode: user?.preferences?.darkMode ?? false,
+      language: user?.preferences?.language ?? "pt-BR",
     },
   })
 
   const serviceSettingsForm = useForm<ServiceSettingsFormValues>({
     resolver: zodResolver(serviceSettingsSchema),
     defaultValues: {
-      serviceType: user?.settings?.services?.serviceType || "hora",
-      autoAcceptBookings: user?.settings?.services?.autoAcceptBookings || false,
-      advanceBookingDays: user?.settings?.services?.advanceBookingDays || "30",
-      cancellationPolicy: user?.settings?.services?.cancellationPolicy || "moderada",
+      serviceType: user?.settings?.serviceType || "hora",
+      autoAcceptBookings: user?.settings?.autoAcceptBookings || false,
+      advanceBookingDays: user?.settings?.advanceBookingDays || "0",
+      cancellationPolicy: user?.settings?.cancellationPolicy || "moderada",
     },
   })
 
@@ -98,7 +98,7 @@ export default function PrestadorConfiguracoesPage() {
     setErrorMessage(null)
 
     try {
-      console.log("onPasswordSubmit")
+      console.log("Senha atualizada:", data)
     } catch (error) {
       setErrorMessage("Ocorreu um erro ao atualizar a senha. Tente novamente.")
     } finally {
@@ -143,7 +143,7 @@ export default function PrestadorConfiguracoesPage() {
     }
   }
 
-  if (!isAuthenticated || user?.profile?.type !== "prestador") {
+  if (!isAuthenticated || user?.type !== "prestador") {
     return null
   }
 

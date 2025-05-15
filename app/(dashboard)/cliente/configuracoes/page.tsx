@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { useClienteAuth } from "@/store/auth"
 import { ClienteLayout } from "@/components/dashboard/cliente/cliente-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -41,14 +41,14 @@ type PreferencesFormValues = z.infer<typeof preferencesSchema>
 
 export default function ClienteConfiguracoesPage() {
   const router = useRouter()
-  const { user, isAuthenticated, updateSettings } = useAuthStore()
+  const { user, isAuthenticated } = useClienteAuth()
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false)
   const [isSubmittingPreferences, setIsSubmittingPreferences] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || user?.profile?.type !== "cliente") {
+    if (!isAuthenticated || user?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
@@ -65,10 +65,10 @@ export default function ClienteConfiguracoesPage() {
   const preferencesForm = useForm<PreferencesFormValues>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      notifications: user?.settings?.preferences.notifications ?? true,
-      emailMarketing: user?.settings?.preferences.emailMarketing ?? false,
-      darkMode: user?.settings?.preferences.darkMode ?? false,
-      language: user?.settings?.preferences.language ?? "pt-BR",
+      notifications: user?.preferences.notifications ?? true,
+      emailMarketing: user?.preferences.emailMarketing ?? false,
+      darkMode: user?.preferences.darkMode ?? false,
+      language: user?.preferences.language ?? "pt-BR",
     },
   })
 
@@ -92,10 +92,6 @@ export default function ClienteConfiguracoesPage() {
     setErrorMessage(null)
 
     try {
-      updateSettings({
-        ...data,
-        language: data.language as Language,
-      })
       setSuccessMessage("Preferências atualizadas com sucesso!")
 
     } catch (error) {
@@ -105,7 +101,7 @@ export default function ClienteConfiguracoesPage() {
     }
   }
 
-  if (!isAuthenticated || user?.profile?.type !== "cliente") {
+  if (!isAuthenticated || user?.type !== "cliente") {
     return null
   }
 

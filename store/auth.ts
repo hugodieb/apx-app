@@ -37,6 +37,7 @@ interface AuthActions {
   setPrestadorUser: (user: PrestadorUser) => void;
   setAdminUser: (user: AdminUser) => void;
   updateProfile: <T extends ClienteUser | PrestadorUser | AdminUser>(userData: Partial<T>) => void;
+  updatePrefences: <T extends ClienteUser | PrestadorUser>(preferences: Partial<T['preferences']>) => void;
 }
 
 export const useAuthStore = create<AuthState & AuthActions>()(
@@ -78,6 +79,25 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         return state;
       }),
 
+    updatePrefences: (preferences) =>
+      set((state) => {
+        if (!state.isAuthenticated || !state.user) return state;
+
+        if (state.userType === 'cliente' && state.user.type === 'cliente') {
+          return {
+            ...state,
+            user: { ...state.user, preferences } as ClienteUser,
+          };
+        } else if (state.userType === 'prestador' && state.user.type === 'prestador') {
+          return {
+            ...state,
+            user: { ...state.user, preferences } as PrestadorUser,
+          };
+        }
+
+        return state;
+      }),
+
     logout: () =>
       set({ isAuthenticated: false, userType: null, user: null }),
   })
@@ -90,6 +110,7 @@ export const useClienteAuth = () => {
     isAuthenticated: state.isAuthenticated && state.userType === 'cliente',
     user: state.userType === 'cliente' ? state.user : null,
     updateProfile: state.updateProfile,
+    updateprefences: state.updatePrefences,
     logout: state.logout
   };
 };
@@ -100,6 +121,7 @@ export const usePrestadorAuth = () => {
     isAuthenticated: state.isAuthenticated && state.userType === 'prestador',
     user: state.userType === 'prestador' ? state.user : null,
     updateProfile: state.updateProfile,
+    updatePrefences: state.updatePrefences,
     logout: state.logout
   };
 };

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { useClienteAuth } from "@/store/auth"
 import { ClienteLayout } from "@/components/dashboard/cliente/cliente-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -13,22 +13,22 @@ import { NovoAgendamento } from "@/components/dashboard/cliente/novo-agendamento
 
 export default function ClienteAgendamentosPage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated } = useClienteAuth()
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [activeTab, setActiveTab] = useState("proximos")
 
   useEffect(() => {
-    if (!isAuthenticated || user?.profile?.type !== "cliente") {
+    if (!isAuthenticated || user?.type !== "cliente") {
       router.push("/cliente/login")
     }
   }, [isAuthenticated, user, router])
 
-  if (!isAuthenticated || user?.profile?.type !== "cliente") {
+  if (!isAuthenticated || user?.type !== "cliente") {
     return null
   }
 
   // Filtrar agendamentos do cliente atual
-  const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user.profile?.id)
+  const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user.id)
 
   // Separar agendamentos por status
   const proximosAgendamentos = clientAppointments

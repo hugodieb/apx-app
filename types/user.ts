@@ -34,10 +34,10 @@ export interface UserPreferences {
 
 // Interface para configurações do prestador
 export interface ProviderSettings {
-  serviceType: string;
+  serviceType: 'hora' | 'dia' | 'servico' | 'projeto';
   autoAcceptBookings: boolean;
-  advanceBookingDays: boolean;
-  cancellationPolicy: string;
+  advanceBookingDays: string;
+  cancellationPolicy: 'flexivel' | 'moderada' | 'rigorosa';
 }
 
 // Interface para mídia social
@@ -57,6 +57,7 @@ export interface ClienteUser extends BaseUser {
   birthDate: string;
   gender: 'masculino' | 'feminino' | 'outro' | 'prefiro_nao_informar';
   address: Address;
+  preferences: UserPreferences;
 }
 
 // Interface para prestador
@@ -86,7 +87,6 @@ export interface AdminUser extends BaseUser {
 }
 
 export type User = ClienteUser | PrestadorUser | AdminUser;
-
 
 export const ROUTE_DASHBOARD: Record<User["type"], string> = {
   cliente: "/cliente/dashboard",
