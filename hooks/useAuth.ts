@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { User, ROUTE_DASHBOARD, ClienteUser, PrestadorUser, AdminUser } from '@/types/user';
 import { authApi as api } from '@/lib/api-provider';
-import { LoginParams } from '@/types/auth';
+import { LoginParams, RegisterParams } from '@/types/auth';
 import { useAuthStore } from '@/store/auth';
 
 export function useAuth() {
@@ -13,7 +13,7 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: async (params: LoginParams) => {
       const response = await api.login(params);
-      return response;
+      return response as User
     },
     onSuccess: (user: User) => {
       switch (user.type) {
@@ -51,9 +51,30 @@ export function useAuth() {
     }
   })
 
+  const registerMutation = useMutation({
+    mutationFn: async (params: RegisterParams): Promise<User> => {
+      const response = await api.register(params);
+      return response as User;
+    },
+    onSuccess: (user: User) => {
+      toast.success('Cadastro realizado com sucesso');
+      const redirectRoute = ROUTE_DASHBOARD[user.type];
+      router.push(redirectRoute);
+    },
+  });
+
+  const whoamiMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.whoami()
+      return response
+    }
+  })
+
   return {
     login: loginMutation.mutate,
-    logout: logoutMutation.mutate
+    logout: logoutMutation.mutate,
+    register: registerMutation.mutate,
+    whoami: whoamiMutation.mutate,
   }
 };
 

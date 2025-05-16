@@ -66,9 +66,13 @@ export function CadastroForm({ type, title, redirectToLogin, backLink = "/" }: P
   async function onSubmit(data: CadastroFormValues) {
     setIsSubmitting(true)
     setError(null)
-    const { confirmPassword, ...registerData } = data
+    const { confirmPassword, ...resData } = data
+    const registerData = {
+      ...resData,
+      type
+    }
     try {
-      register({ ...registerData, type })
+      register(registerData)
     } catch (err) {
       setError("Ocorreu um erro ao realizar o cadastro. Tente novamente.")
     } finally {

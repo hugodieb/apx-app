@@ -7,6 +7,7 @@ export interface RegisterParams {
   name: string
   email: string
   password: string
+  type: 'cliente' | 'prestador' | 'admin'
 }
 
 export interface RegisterFormData {

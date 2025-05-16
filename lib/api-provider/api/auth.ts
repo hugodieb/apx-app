@@ -16,3 +16,8 @@ export const register = async (formData: RegisterParams): Promise<{ type: UserTy
 export const logout = async () => {
   return apiClient.post("/auth/logout/", null)
 }
+
+export const whoami = async () => {
+  const response = await apiClient.get<{ user: User }>("/auth/whoami")
+  return response.user
+}
