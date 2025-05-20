@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { usePrestadorAuth } from "@/store/auth"
 import { mockAppointments } from "@/lib/mock-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,22 +8,11 @@ import { Calendar, Clock, DollarSign, Star, User } from "lucide-react"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 
 export default function PrestadorDashboardPage() {
-  const router = useRouter()
-  const { user, isAuthenticated } = usePrestadorAuth()
+  const { user } = usePrestadorAuth()
   const services = user?.services
 
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
-      router.push("/prestador/login")
-    }
-  }, [isAuthenticated, user, router])
-
-  if (!isAuthenticated || user?.type !== "prestador") {
-    return null
-  }
-
   // Filtrar agendamentos do prestador atual
-  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user.id)
+  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user?.id)
 
   // Ordenar por data (próximos primeiro)
   const sortedAppointments = [...providerAppointments].sort(
@@ -44,7 +31,7 @@ export default function PrestadorDashboardPage() {
   return (
     <PrestadorLayout>
       <div className="p-4 md:p-6">
-        <h1 className="text-2xl font-bold mb-6">Olá, {user.name}!</h1>
+        <h1 className="text-2xl font-bold mb-6">Olá, {user?.name}!</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="bg-slate-800 border-slate-700">

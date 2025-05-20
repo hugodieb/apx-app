@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { useClienteAuth } from "@/store/auth"
 import { ClienteLayout } from "@/components/dashboard/cliente/cliente-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,17 +38,10 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>
 
 export default function ClientePerfilPage() {
-  const router = useRouter()
   const { user, isAuthenticated, updateProfile } = useClienteAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
-      router.push("/cliente/login")
-    }
-  }, [isAuthenticated, user, router])
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -90,10 +82,6 @@ export default function ClientePerfilPage() {
     }
   }
 
-  if (!isAuthenticated || user?.type !== "cliente") {
-    return null
-  }
-
   return (
     <ClienteLayout>
       <div className="p-4 md:p-6">
@@ -132,8 +120,8 @@ export default function ClientePerfilPage() {
                       <div className="relative mb-4">
                         <Avatar className="h-24 w-24">
                           <AvatarImage
-                            src={user.avatar || "/placeholder.svg?height=96&width=96"}
-                            alt={user.name}
+                            src={user?.avatar || "/placeholder.svg?height=96&width=96"}
+                            alt={user?.name}
                           />
                           <AvatarFallback className="bg-orange-500 text-white text-xl">
                             <User className="h-12 w-12" />

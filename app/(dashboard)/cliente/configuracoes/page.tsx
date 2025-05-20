@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { useClienteAuth } from "@/store/auth"
 import { ClienteLayout } from "@/components/dashboard/cliente/cliente-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +15,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Language } from "@/types/settings-types"
 
 const passwordSchema = z
   .object({
@@ -40,18 +38,11 @@ type PasswordFormValues = z.infer<typeof passwordSchema>
 type PreferencesFormValues = z.infer<typeof preferencesSchema>
 
 export default function ClienteConfiguracoesPage() {
-  const router = useRouter()
-  const { user, isAuthenticated } = useClienteAuth()
+  const { user } = useClienteAuth()
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false)
   const [isSubmittingPreferences, setIsSubmittingPreferences] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
-      router.push("/cliente/login")
-    }
-  }, [isAuthenticated, user, router])
 
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -65,10 +56,10 @@ export default function ClienteConfiguracoesPage() {
   const preferencesForm = useForm<PreferencesFormValues>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      notifications: user?.preferences.notifications ?? true,
-      emailMarketing: user?.preferences.emailMarketing ?? false,
-      darkMode: user?.preferences.darkMode ?? false,
-      language: user?.preferences.language ?? "pt-BR",
+      notifications: user?.preferences?.notifications ?? true,
+      emailMarketing: user?.preferences?.emailMarketing ?? false,
+      darkMode: user?.preferences?.darkMode ?? false,
+      language: user?.preferences?.language ?? "pt-BR",
     },
   })
 
@@ -99,10 +90,6 @@ export default function ClienteConfiguracoesPage() {
     } finally {
       setIsSubmittingPreferences(false)
     }
-  }
-
-  if (!isAuthenticated || user?.type !== "cliente") {
-    return null
   }
 
   return (

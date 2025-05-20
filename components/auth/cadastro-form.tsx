@@ -33,6 +33,7 @@ const cadastroSchema = z
     email: z.string().email({ message: "Email inválido" }),
     password: z.string().min(6, { message: "Senha deve ter pelo menos 6 caracteres" }),
     confirmPassword: z.string().min(6, { message: "Confirme sua senha" }),
+    type: z.enum(["cliente", "prestador", "admin"], { message: "Tipo inválido" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem",
@@ -60,6 +61,7 @@ export function CadastroForm({ type, title, redirectToLogin, backLink = "/" }: P
       email: "",
       password: "",
       confirmPassword: "",
+      type: type
     },
   })
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
@@ -47,17 +47,10 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>
 
 export default function PrestadorPerfilPage() {
-  const router = useRouter()
-  const { user, isAuthenticated, updateProfile } = usePrestadorAuth()
+  const { user, updateProfile } = usePrestadorAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
-      router.push("/prestador/login")
-    }
-  }, [isAuthenticated, user, router])
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -107,10 +100,6 @@ export default function PrestadorPerfilPage() {
     }
   }
 
-  if (!isAuthenticated || user?.type !== "prestador") {
-    return null
-  }
-
   return (
     <PrestadorLayout>
       <div className="p-4 md:p-6">
@@ -150,8 +139,8 @@ export default function PrestadorPerfilPage() {
                       <div className="relative mb-4">
                         <Avatar className="h-24 w-24">
                           <AvatarImage
-                            src={user.avatar || "/placeholder.svg?height=96&width=96"}
-                            alt={user.name}
+                            src={user?.avatar || "/placeholder.svg?height=96&width=96"}
+                            alt={user?.name}
                           />
                           <AvatarFallback className="bg-blue-700 text-white text-xl">
                             <User className="h-12 w-12" />

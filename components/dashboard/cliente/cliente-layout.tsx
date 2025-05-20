@@ -1,12 +1,13 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { usePathname, useRouter } from "next/navigation"
+import { useClienteAuth } from "@/store/auth"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, Home, LogOut, Menu, MessageSquare, Search, Settings, User, X } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
+import LoadingSpinner from "@/app/loading"
 
 interface ClienteLayoutProps {
   children: ReactNode
@@ -14,7 +15,8 @@ interface ClienteLayoutProps {
 
 export function ClienteLayout({ children }: ClienteLayoutProps) {
   const pathname = usePathname()
-  const { user } = useAuthStore()
+  const router = useRouter()
+  const { user, isAuthenticated, isloading } = useClienteAuth()
   const { logout } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -28,7 +30,25 @@ export function ClienteLayout({ children }: ClienteLayoutProps) {
     { name: "Configurações", href: "/cliente/configuracoes", icon: Settings },
   ]
 
+  useEffect(() => {
+    if (!isloading) {
+      if (!isAuthenticated || user?.type !== "cliente") {
+        router.push("/cliente/login")
+      }
+    }
+  }, [isloading, isAuthenticated, user, router])
+
+  if (isloading) {
+    debugger
+    return <LoadingSpinner />
+  }
+
+  if (!isAuthenticated || user?.type !== "cliente") {
+    return null
+  }
+
   function logoutForm() {
+    router.push('/')
     logout()
   }
 

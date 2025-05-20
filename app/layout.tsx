@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryClientProviderWrapper } from "@/components/providers/query-client-provider";
+import { WhoAmISync } from "@/components/auth/WhoAmiSync"
 import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <QueryClientProviderWrapper>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+            <WhoAmISync />
             {children}
             <Toaster richColors position="top-right" />
           </ThemeProvider>

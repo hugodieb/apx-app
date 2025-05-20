@@ -1,8 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { useClienteAuth } from "@/store/auth"
 import { mockAppointments } from "@/lib/mock-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -10,18 +8,8 @@ import { Calendar, Clock, MapPin, User } from "lucide-react"
 import { ClienteLayout } from "@/components/dashboard/cliente/cliente-layout"
 
 export default function ClienteDashboardPage() {
-  const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "cliente") {
-      router.push("/cliente/login")
-    }
-  }, [isAuthenticated, user, router])
-
-  if (!isAuthenticated || user?.type !== "cliente") {
-    return null
-  }
+  //const router = useRouter()
+  const { user } = useClienteAuth()
 
   // Filtrar agendamentos do cliente atual
   const clientAppointments = mockAppointments.filter((appointment) => appointment.clientId === user?.id)

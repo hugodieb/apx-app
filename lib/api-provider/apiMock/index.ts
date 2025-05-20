@@ -1,14 +1,8 @@
 import { mockUsers } from '@/lib/mock-data';
 import { LoginParams, RegisterParams } from '@/types/auth';
-import { ClienteUser, PrestadorUser, AdminUser, User, UserType } from '@/types/user';
+import { User } from '@/types/user';
 import { mockasync } from '@/lib/utils/mockasync';
-import { useAuthStore } from '@/store/auth';
-
-type whoAMIresponse =
-  | { success: true; user: ClienteUser; userType: "cliente" }
-  | { success: true; user: PrestadorUser; userType: "prestador" }
-  | { success: true; user: AdminUser; userType: "admin" }
-  | { success: false; error: string };
+import Cookies from 'js-cookie'
 
 export const login = async (params: LoginParams): Promise<User> => {
   const { email, password } = params;
@@ -37,6 +31,11 @@ export const login = async (params: LoginParams): Promise<User> => {
 }
 
 export const logout = async (): Promise<void> => {
+  const role = Cookies.get('x-user-role') || '';
+
+  if (role) {
+    Cookies.remove('x-user-role');
+  }
   return mockasync<void>(undefined)
 }
 
@@ -67,20 +66,24 @@ export const register = async (params: RegisterParams): Promise<User> => {
   }
 }
 
-export const whoami = async (): Promise<whoAMIresponse> => {
-  const { userType, user } = useAuthStore.getState()
+export const whoami = async () => {
 
-  if (!userType || !user) {
-    return { success: false, error: "Nenhum usuário autenticado" };
-  }
-  switch (userType) {
-    case "cliente":
-      return { success: true, user: user as ClienteUser, userType: "cliente" };
-    case "prestador":
-      return { success: true, user: user as PrestadorUser, userType: "prestador" };
-    case "admin":
-      return { success: true, user: user as AdminUser, userType: "admin" };
+  const role = Cookies.get('x-user-role') || '';
+  let user;
+
+  switch (role) {
+    case 'cliente':
+      user = mockUsers.clientes[0];
+      break;
+    case 'prestador':
+      user = mockUsers.prestadores[0];
+      break;
+    case 'admin':
+      user = mockUsers.admins[0];
+      break;
     default:
-      return { success: false, error: "Tipo de usuário inválido" };
+      user = { id: 0, name: 'Sem Nome', email: 'semnome@email.com', type: 'cliente' };
   }
+
+  return mockasync(user)
 }

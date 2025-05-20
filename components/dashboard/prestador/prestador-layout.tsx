@@ -1,10 +1,12 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useAuthStore } from "@/store/auth"
+import { usePathname, useRouter } from "next/navigation"
+import { usePrestadorAuth } from "@/store/auth"
 import { Button } from "@/components/ui/button"
+import LoadingSpinner from "@/app/loading"
+
 import {
   Calendar,
   Clock,
@@ -27,7 +29,8 @@ interface PrestadorLayoutProps {
 
 export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   const pathname = usePathname()
-  const { user, logout } = useAuthStore()
+  const router = useRouter()
+  const { user, isloading, isAuthenticated, logout } = usePrestadorAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const navigation = [
@@ -41,6 +44,23 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
     { name: "Perfil", href: "/prestador/perfil", icon: User },
     { name: "Configurações", href: "/prestador/configuracoes", icon: Settings },
   ]
+
+  useEffect(() => {
+    if (!isloading) {
+      if (!isAuthenticated || user?.type !== "prestador") {
+        router.push("/cliente/login")
+      }
+    }
+  }, [isloading, isAuthenticated, user, router])
+
+  if (isloading) {
+    debugger
+    return <LoadingSpinner />
+  }
+
+  if (!isAuthenticated || user?.type !== "prestador") {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">

@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,23 +11,12 @@ import { AgendaPrestador } from "@/components/dashboard/prestador/agenda-prestad
 import { BloqueioHorarios } from "@/components/dashboard/prestador/bloqueio-horarios"
 
 export default function PrestadorAgendaPage() {
-  const router = useRouter()
-  const { user, isAuthenticated } = usePrestadorAuth()
+  const { user } = usePrestadorAuth()
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [activeTab, setActiveTab] = useState("agenda")
 
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
-      router.push("/prestador/login")
-    }
-  }, [isAuthenticated, user, router])
-
-  if (!isAuthenticated || user?.type !== "prestador") {
-    return null
-  }
-
   // Filtrar agendamentos do prestador atual
-  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user.id)
+  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user?.id)
 
   // Ordenar por data (próximos primeiro)
   const sortedAppointments = [...providerAppointments].sort(

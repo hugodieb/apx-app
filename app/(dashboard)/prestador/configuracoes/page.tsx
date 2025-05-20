@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Language } from "@/types/settings-types"
 
 const passwordSchema = z
   .object({
@@ -49,19 +47,12 @@ type PreferencesFormValues = z.infer<typeof preferencesSchema>
 type ServiceSettingsFormValues = z.infer<typeof serviceSettingsSchema>
 
 export default function PrestadorConfiguracoesPage() {
-  const router = useRouter()
-  const { user, isAuthenticated, updatePrefences } = usePrestadorAuth()
+  const { user, updatePrefences } = usePrestadorAuth()
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false)
   const [isSubmittingPreferences, setIsSubmittingPreferences] = useState(false)
   const [isSubmittingServiceSettings, setIsSubmittingServiceSettings] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.type !== "prestador") {
-      router.push("/prestador/login")
-    }
-  }, [isAuthenticated, user, router])
 
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -141,10 +132,6 @@ export default function PrestadorConfiguracoesPage() {
     } finally {
       setIsSubmittingServiceSettings(false)
     }
-  }
-
-  if (!isAuthenticated || user?.type !== "prestador") {
-    return null
   }
 
   return (

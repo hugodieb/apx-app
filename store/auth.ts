@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { ClienteUser, PrestadorUser, AdminUser } from '@/types/user'
 
 interface BaseAuthState {
+  isLoading: boolean;
   isAuthenticated: boolean;
   logout: () => void;
 }
@@ -33,6 +34,7 @@ type AuthState =
   | UnauthenticatedState;
 
 interface AuthActions {
+  setLoading: (loading: boolean) => void;
   setClienteUser: (user: ClienteUser) => void;
   setPrestadorUser: (user: PrestadorUser) => void;
   setAdminUser: (user: AdminUser) => void;
@@ -42,18 +44,19 @@ interface AuthActions {
 
 export const useAuthStore = create<AuthState & AuthActions>()(
   (set) => ({
+    isLoading: true,
     isAuthenticated: false,
     userType: null,
     user: null,
 
     setClienteUser: (user: ClienteUser) =>
-      set({ isAuthenticated: true, userType: 'cliente', user }),
+      set({ isAuthenticated: true, userType: 'cliente', user, isLoading: false }),
 
     setPrestadorUser: (user: PrestadorUser) =>
-      set({ isAuthenticated: true, userType: 'prestador', user }),
+      set({ isAuthenticated: true, userType: 'prestador', user, isLoading: false }),
 
     setAdminUser: (user: AdminUser) =>
-      set({ isAuthenticated: true, userType: 'admin', user }),
+      set({ isAuthenticated: true, userType: 'admin', user, isLoading: false }),
 
     updateProfile: (userData) =>
       set((state) => {
@@ -79,6 +82,8 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         return state;
       }),
 
+    setLoading: (loading) => set({ isLoading: loading }),
+
     updatePrefences: (preferences) =>
       set((state) => {
         if (!state.isAuthenticated || !state.user) return state;
@@ -99,7 +104,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       }),
 
     logout: () =>
-      set({ isAuthenticated: false, userType: null, user: null }),
+      set({ isAuthenticated: false, userType: null, user: null, isLoading: true }),
   })
 );
 
@@ -111,7 +116,8 @@ export const useClienteAuth = () => {
     user: state.userType === 'cliente' ? state.user : null,
     updateProfile: state.updateProfile,
     updateprefences: state.updatePrefences,
-    logout: state.logout
+    logout: state.logout,
+    isloading: state.isLoading
   };
 };
 
@@ -122,7 +128,8 @@ export const usePrestadorAuth = () => {
     user: state.userType === 'prestador' ? state.user : null,
     updateProfile: state.updateProfile,
     updatePrefences: state.updatePrefences,
-    logout: state.logout
+    logout: state.logout,
+    isloading: state.isLoading
   };
 };
 
@@ -132,6 +139,7 @@ export const useAdminAuth = () => {
     isAuthenticated: state.isAuthenticated && state.userType === 'admin',
     user: state.userType === 'admin' ? state.user : null,
     updateProfile: state.updateProfile,
-    logout: state.logout
+    logout: state.logout,
+    isloading: state.isLoading
   };
 };

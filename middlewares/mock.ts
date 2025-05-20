@@ -37,7 +37,20 @@ export function middleware(request: NextRequest) {
     return response
   }
 
-  return NextResponse.next()
+  let role = 'anon'
+
+  if (pathname.includes('/cliente')) {
+    role = 'cliente'
+  } else if (pathname.includes('/prestador')) {
+    role = 'prestador'
+  } else if (pathname.includes('admin')) {
+    role = 'admin'
+  }
+
+  const response = NextResponse.next()
+  response.cookies.set('x-user-role', role)
+
+  return response
 }
 
 export const config = {
