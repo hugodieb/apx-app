@@ -22,6 +22,7 @@ import {
   Bell,
   Building,
 } from "lucide-react"
+import { useAuth } from "@/hooks/useAuth"
 
 interface PrestadorLayoutProps {
   children: ReactNode
@@ -30,7 +31,8 @@ interface PrestadorLayoutProps {
 export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const { user, isloading, isAuthenticated, logout } = usePrestadorAuth()
+  const { user, isloading, isAuthenticated } = usePrestadorAuth()
+  const { logout } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const navigation = [
@@ -60,6 +62,11 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
 
   if (!isAuthenticated || user?.type !== "prestador") {
     return null
+  }
+
+  function logoutForm() {
+    router.push('/')
+    logout()
   }
 
   return (
@@ -103,7 +110,7 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
               })}
               <button
                 onClick={() => {
-                  logout()
+                  logoutForm()
                   setIsSidebarOpen(false)
                 }}
                 className="flex items-center px-3 py-2 mt-4 text-slate-300 hover:bg-slate-700 rounded-md"
@@ -153,7 +160,7 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
                   </div>
                 </div>
                 <Button
-                  onClick={logout}
+                  onClick={logoutForm}
                   variant="outline"
                   className="w-full border-slate-700 text-slate-300 hover:bg-slate-700"
                 >
