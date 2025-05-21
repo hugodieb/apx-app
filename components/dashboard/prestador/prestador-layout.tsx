@@ -31,7 +31,8 @@ interface PrestadorLayoutProps {
 export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const { user, isloading, isAuthenticated } = usePrestadorAuth()
+  const { isLoading } = useAuth()
+  const { user, isAuthenticated } = usePrestadorAuth()
   const { logout } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -48,15 +49,14 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   ]
 
   useEffect(() => {
-    if (!isloading) {
+    if (!isLoading) {
       if (!isAuthenticated || user?.type !== "prestador") {
         router.push("/cliente/login")
       }
     }
-  }, [isloading, isAuthenticated, user, router])
+  }, [isLoading, isAuthenticated, user, router])
 
-  if (isloading) {
-    debugger
+  if (isLoading) {
     return <LoadingSpinner />
   }
 

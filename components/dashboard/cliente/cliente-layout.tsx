@@ -16,8 +16,8 @@ interface ClienteLayoutProps {
 export function ClienteLayout({ children }: ClienteLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const { user, isAuthenticated, isloading } = useClienteAuth()
-  const { logout } = useAuth()
+  const { user, isAuthenticated } = useClienteAuth()
+  const { logout, isLoading } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const navigation = [
@@ -31,15 +31,14 @@ export function ClienteLayout({ children }: ClienteLayoutProps) {
   ]
 
   useEffect(() => {
-    if (!isloading) {
+    if (!isLoading) {
       if (!isAuthenticated || user?.type !== "cliente") {
         router.push("/cliente/login")
       }
     }
-  }, [isloading, isAuthenticated, user, router])
+  }, [isLoading, isAuthenticated, user, router])
 
-  if (isloading) {
-    debugger
+  if (isLoading) {
     return <LoadingSpinner />
   }
 

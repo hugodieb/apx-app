@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { ClienteUser, PrestadorUser, AdminUser } from '@/types/user'
 
 interface BaseAuthState {
-  isLoading: boolean;
   isAuthenticated: boolean;
   logout: () => void;
 }
@@ -34,7 +33,6 @@ type AuthState =
   | UnauthenticatedState;
 
 interface AuthActions {
-  setLoading: (loading: boolean) => void;
   setClienteUser: (user: ClienteUser) => void;
   setPrestadorUser: (user: PrestadorUser) => void;
   setAdminUser: (user: AdminUser) => void;
@@ -44,19 +42,18 @@ interface AuthActions {
 
 export const useAuthStore = create<AuthState & AuthActions>()(
   (set) => ({
-    isLoading: true,
     isAuthenticated: false,
     userType: null,
     user: null,
 
     setClienteUser: (user: ClienteUser) =>
-      set({ isAuthenticated: true, userType: 'cliente', user, isLoading: false }),
+      set({ isAuthenticated: true, userType: 'cliente', user }),
 
     setPrestadorUser: (user: PrestadorUser) =>
-      set({ isAuthenticated: true, userType: 'prestador', user, isLoading: false }),
+      set({ isAuthenticated: true, userType: 'prestador', user }),
 
     setAdminUser: (user: AdminUser) =>
-      set({ isAuthenticated: true, userType: 'admin', user, isLoading: false }),
+      set({ isAuthenticated: true, userType: 'admin', user }),
 
     updateProfile: (userData) =>
       set((state) => {
@@ -81,8 +78,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
         return state;
       }),
-
-    setLoading: (loading) => set({ isLoading: loading }),
 
     updatePrefences: (preferences) =>
       set((state) => {
@@ -117,7 +112,6 @@ export const useClienteAuth = () => {
     updateProfile: state.updateProfile,
     updateprefences: state.updatePrefences,
     logout: state.logout,
-    isloading: state.isLoading
   };
 };
 
@@ -129,7 +123,6 @@ export const usePrestadorAuth = () => {
     updateProfile: state.updateProfile,
     updatePrefences: state.updatePrefences,
     logout: state.logout,
-    isloading: state.isLoading
   };
 };
 
@@ -140,6 +133,5 @@ export const useAdminAuth = () => {
     user: state.userType === 'admin' ? state.user : null,
     updateProfile: state.updateProfile,
     logout: state.logout,
-    isloading: state.isLoading
   };
 };

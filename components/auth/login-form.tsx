@@ -12,6 +12,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
+import { useClienteAuth } from "@/store/auth"
+import { Loader2 } from "lucide-react"
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -29,8 +31,7 @@ type Props = {
 
 export function LoginForm({ type, title, redirectToLogin, backLink = "/" }: Props) {
   const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
+  const { login, isLoginPending } = useAuth()
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -41,19 +42,15 @@ export function LoginForm({ type, title, redirectToLogin, backLink = "/" }: Prop
   })
 
   async function onSubmit(data: LoginFormValues) {
-    setIsLoading(true)
     setError(null)
-
+    debugger
     try {
       login({
         email: data.email,
         password: data.password
       })
     } catch (err) {
-      console.log(err)
       setError("Ocorreu um erro ao fazer login. Tente novamente.")
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -107,8 +104,8 @@ export function LoginForm({ type, title, redirectToLogin, backLink = "/" }: Prop
                 )}
               />
 
-              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={isLoading}>
-                {isLoading ? "Entrando..." : "Entrar"}
+              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={isLoginPending}>
+                {isLoginPending ? <Loader2 className="animate-spin" /> : "Entrar"}
               </Button>
             </form>
           </Form>

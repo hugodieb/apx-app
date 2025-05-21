@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import {
   Form,
@@ -52,7 +52,7 @@ type Props = {
 export function CadastroForm({ type, title, redirectToLogin, backLink = "/" }: Props) {
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { register } = useAuth()
+  const { register, isRegisterPending } = useAuth()
 
   const form = useForm<CadastroFormValues>({
     resolver: zodResolver(cadastroSchema),
@@ -135,8 +135,8 @@ export function CadastroForm({ type, title, redirectToLogin, backLink = "/" }: P
                 />
               ))}
 
-              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={isSubmitting}>
-                {isSubmitting ? "Cadastrando..." : "Cadastrar"}
+              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={isRegisterPending}>
+                {isRegisterPending ? <Loader2 className="animate-spin" /> : "Cadastrar"}
               </Button>
             </form>
           </Form>

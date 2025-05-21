@@ -15,7 +15,7 @@ export function useAuth() {
       const response = await api.login(params);
       return response as User;
     },
-    onSuccess: (user: User) => {
+    onSuccess: async (user: User) => {
       switch (user.type) {
         case 'cliente':
           authStore.setClienteUser(user as ClienteUser);
@@ -34,6 +34,7 @@ export function useAuth() {
     },
     onError: (error: any) => {
       toast.error('Usuário e/ou senha incorretos.');
+      return error;
     },
   });
 
@@ -45,8 +46,9 @@ export function useAuth() {
     onSuccess: () => {
       authStore.logout();
     },
-    onError: () => {
+    onError: (error: any) => {
       toast.error("Algo deu errado, se possível contate o administrador.");
+      return error
     }
   });
 
@@ -62,12 +64,10 @@ export function useAuth() {
     },
   });
 
-  const whoamiMutation = useMutation({
-    mutationFn: async () => {
-      const response = await api.whoami();
-      return response as User;
-    },
-    onSuccess: (user: User) => {
+  const checkWhoami = async () => {
+    try {
+      debugger
+      const user = await api.whoami()
       switch (user.type) {
         case 'cliente':
           authStore.setClienteUser(user as ClienteUser);
@@ -79,17 +79,35 @@ export function useAuth() {
           authStore.setAdminUser(user as AdminUser);
           break;
       }
-    },
-    onError: () => {
-      toast.error('Algo deu errado, contate o administrador.');
-    },
 
-  });
+      return user;
+
+    } catch (error) {
+      await api.logout()
+
+      return null
+    }
+  }
+
+  const { data: user, isLoading, isFetching, isError } = useQuery({
+    queryKey: ['auth'],
+    queryFn: checkWhoami,
+    retry: false
+  })
 
   return {
+    user,
+    isLoading,
+    isFetching,
+    isError,
+    isLoginPending: loginMutation.isPending,
+    isLoginSucess: loginMutation.isSuccess,
+    isLoginError: loginMutation.isError,
+    isRegisterPending: registerMutation.isPending,
+    isRegisterSucess: registerMutation.isSuccess,
+    isRegisterError: registerMutation.isError,
     login: loginMutation.mutate,
     logout: logoutMutation.mutate,
     register: registerMutation.mutate,
-    whoami: whoamiMutation.mutate,
   };
 }
