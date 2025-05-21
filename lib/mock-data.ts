@@ -35,7 +35,7 @@ export const mockUsers = {
         state: "SP",
         zipCode: "01310-100",
       },
-      establishmentId: "estab1", // Referência ao estabelecimento
+      establishmentId: "stab1", // Referência ao estabelecimento
       serviceType: "hora", // Tipo de serviço: hora, dia, serviço, projeto
       services: [
         { id: "s1", name: "Corte de Cabelo", price: 50, duration: 30 },

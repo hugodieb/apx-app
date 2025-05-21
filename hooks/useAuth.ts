@@ -66,7 +66,6 @@ export function useAuth() {
 
   const checkWhoami = async () => {
     try {
-      debugger
       const user = await api.whoami()
       switch (user.type) {
         case 'cliente':

@@ -5,6 +5,7 @@ import { mockasync } from '@/lib/utils/mockasync';
 import Cookies from 'js-cookie'
 
 export const login = async (params: LoginParams): Promise<User> => {
+  debugger
   const { email, password } = params;
 
   const userCategories = ['clientes', 'prestadores', 'admins'] as const;
@@ -67,7 +68,7 @@ export const register = async (params: RegisterParams): Promise<User> => {
 }
 
 export const whoami = async () => {
-
+  debugger
   const role = Cookies.get('x-user-role') || '';
   let user;
 
