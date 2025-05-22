@@ -1,22 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { usePrestadorAuth } from "@/store/auth"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
-import { mockAppointments } from "@/lib/mock-data"
+import { Appointments } from "@/hooks/appointment"
+import { useAppointmentStore } from "@/store/appointmentStore"
 import { AgendaPrestador } from "@/components/dashboard/prestador/agenda-prestador"
 import { BloqueioHorarios } from "@/components/dashboard/prestador/bloqueio-horarios"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function PrestadorAgendaPage() {
+
+  const { isLoading } = useAuth()
   const { user } = usePrestadorAuth()
+  const { getAppointments } = useAppointmentStore()
+  const { appointments } = Appointments()
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [activeTab, setActiveTab] = useState("agenda")
 
+  useEffect(() => {
+
+    if (!isLoading && user) {
+      appointments(user)
+    }
+  }, [user, isLoading])
+
   // Filtrar agendamentos do prestador atual
-  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user?.id)
+  const providerAppointments = getAppointments().filter((appointment) => appointment.providerId === user?.id)
 
   // Ordenar por data (próximos primeiro)
   const sortedAppointments = [...providerAppointments].sort(
@@ -96,7 +109,10 @@ export default function PrestadorAgendaPage() {
                 </CardHeader>
                 <CardContent>
                   <AgendaPrestador
-                    agendamentos={selectedDateAppointments}
+                    agendamentos={selectedDateAppointments.map(appointment => ({
+                      ...appointment,
+                      status: appointment.status || "",
+                    }))}
                     emptyMessage="Não há agendamentos para esta data."
                   />
                 </CardContent>

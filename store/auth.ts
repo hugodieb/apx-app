@@ -99,7 +99,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       }),
 
     logout: () =>
-      set({ isAuthenticated: false, userType: null, user: null, isLoading: true }),
+      set({ isAuthenticated: false, userType: null, user: null, }),
   })
 );
 

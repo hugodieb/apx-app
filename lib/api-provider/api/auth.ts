@@ -18,6 +18,6 @@ export const logout = async () => {
 }
 
 export const whoami = async () => {
-  const response = await apiClient.get<{ user: User }>("/auth/whoami")
-  return response.user
+  const response = await apiClient.get<User>("/auth/whoami/")
+  return response
 }
