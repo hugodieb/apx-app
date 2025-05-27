@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Calendar, Clock, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { mockUsers, mockEstablishments } from "@/lib/mock-data"
 import {
   Dialog,
   DialogContent,
@@ -18,21 +17,13 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { format, isToday, isTomorrow } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { useProviderAppointments } from "@/hooks/useProviderAppointments"
+import { appointmentTypes } from "@/types/appointment"
+import { usePrestadorAuth } from "@/store/auth"
 
-interface Agendamento {
-  id: string
-  clientId: string
-  providerId: string
-  establishmentId: string
-  serviceId: string
-  date: string
-  endDate?: string
-  status: string
-  price: number
-}
 
 interface AgendaPrestadorProps {
-  agendamentos: Agendamento[]
+  agendamentos: appointmentTypes[]
   emptyMessage: string
   showAcceptButton?: boolean
   showRejectButton?: boolean
@@ -44,29 +35,28 @@ export function AgendaPrestador({
   showAcceptButton = false,
   showRejectButton = false,
 }: AgendaPrestadorProps) {
+  const { user } = usePrestadorAuth()
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
-  const [selectedAppointment, setSelectedAppointment] = useState<Agendamento | null>(null)
+  const [selectedAppointment, setSelectedAppointment] = useState<appointmentTypes | null>(null)
   const [rejectReason, setRejectReason] = useState("")
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
+  const { acceptProviderAppointment } = useProviderAppointments()
 
-  const handleReject = (appointment: Agendamento) => {
+  const handleReject = (appointment: appointmentTypes) => {
     setSelectedAppointment(appointment)
     setRejectDialogOpen(true)
   }
 
   const confirmReject = () => {
-    // Aqui seria implementada a lógica para rejeitar o agendamento
-    console.log("Agendamento rejeitado:", selectedAppointment?.id, "Motivo:", rejectReason)
     setRejectDialogOpen(false)
     setRejectReason("")
   }
 
   const acceptAppointment = (appointmentId: string) => {
-    // Aqui seria implementada a lógica para aceitar o agendamento
-    console.log("Agendamento aceito:", appointmentId)
+    acceptProviderAppointment(appointmentId)
   }
 
-  const showDetails = (appointment: Agendamento) => {
+  const showDetails = (appointment: appointmentTypes) => {
     setSelectedAppointment(appointment)
     setDetailsDialogOpen(true)
   }
@@ -93,10 +83,9 @@ export function AgendaPrestador({
   return (
     <div className="space-y-4">
       {sortedAppointments.map((agendamento) => {
-        const cliente = mockUsers.clientes.find((c) => c.id === agendamento.clientId)
-        const prestador = mockUsers.prestadores.find((p) => p.id === agendamento.providerId)
+        const cliente = agendamento.client
+        const prestador = user
         const servico = prestador?.services.find((s) => s.id === agendamento.serviceId)
-        const establishment = mockEstablishments.find((e) => e.id === agendamento.establishmentId)
         const serviceType = prestador?.serviceType
 
         return (
@@ -127,9 +116,8 @@ export function AgendaPrestador({
                         </div>
                       ) : (
                         <Badge
-                          className={`${
-                            serviceType === "dia" ? "bg-green-600" : serviceType === "projeto" ? "bg-purple-600" : ""
-                          }`}
+                          className={`${serviceType === "dia" ? "bg-green-600" : serviceType === "projeto" ? "bg-purple-600" : ""
+                            }`}
                         >
                           {serviceType === "dia" ? "Dia Inteiro" : "Projeto"}
                         </Badge>
@@ -222,10 +210,10 @@ export function AgendaPrestador({
                   <h4 className="text-sm font-medium text-slate-400 mb-2">Cliente</h4>
                   <div className="bg-slate-700 p-3 rounded-md">
                     <p className="font-medium">
-                      {mockUsers.clientes.find((c) => c.id === selectedAppointment.clientId)?.name || "Cliente"}
+                      {selectedAppointment.client?.name || "Cliente"}
                     </p>
                     <p className="text-sm text-slate-300">
-                      {mockUsers.clientes.find((c) => c.id === selectedAppointment.clientId)?.phone || "Sem telefone"}
+                      {selectedAppointment.client?.phone || "Sem telefone"}
                     </p>
                   </div>
                 </div>
@@ -235,24 +223,22 @@ export function AgendaPrestador({
                   <h4 className="text-sm font-medium text-slate-400 mb-2">Serviço</h4>
                   <div className="bg-slate-700 p-3 rounded-md">
                     {(() => {
-                      const prestador = mockUsers.prestadores.find((p) => p.id === selectedAppointment.providerId)
-                      const servico = prestador?.services.find((s) => s.id === selectedAppointment.serviceId)
-                      const serviceType = prestador?.serviceType
+                      const servico = user?.services.find((s) => s.id === selectedAppointment.serviceId)
+                      const serviceType = user?.serviceType
 
                       return (
                         <>
                           <div className="flex justify-between items-center mb-2">
                             <p className="font-medium">{servico?.name}</p>
                             <Badge
-                              className={`${
-                                serviceType === "hora"
-                                  ? "bg-blue-600"
-                                  : serviceType === "dia"
-                                    ? "bg-green-600"
-                                    : serviceType === "servico"
-                                      ? "bg-orange-600"
-                                      : "bg-purple-600"
-                              }`}
+                              className={`${serviceType === "hora"
+                                ? "bg-blue-600"
+                                : serviceType === "dia"
+                                  ? "bg-green-600"
+                                  : serviceType === "servico"
+                                    ? "bg-orange-600"
+                                    : "bg-purple-600"
+                                }`}
                             >
                               {serviceType === "hora"
                                 ? "Por Hora"
@@ -312,13 +298,12 @@ export function AgendaPrestador({
                   <h4 className="text-sm font-medium text-slate-400 mb-2">Status</h4>
                   <div className="bg-slate-700 p-3 rounded-md">
                     <Badge
-                      className={`${
-                        selectedAppointment.status === "confirmed"
-                          ? "bg-green-600"
-                          : selectedAppointment.status === "pending"
-                            ? "bg-yellow-600"
-                            : "bg-red-600"
-                      }`}
+                      className={`${selectedAppointment.status === "confirmed"
+                        ? "bg-green-600"
+                        : selectedAppointment.status === "pending"
+                          ? "bg-yellow-600"
+                          : "bg-red-600"
+                        }`}
                     >
                       {selectedAppointment.status === "confirmed"
                         ? "Confirmado"

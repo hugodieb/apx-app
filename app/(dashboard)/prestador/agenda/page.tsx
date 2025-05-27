@@ -6,25 +6,24 @@ import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layo
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
-import { Appointments } from "@/hooks/appointment"
+import { useProviderAppointments } from "@/hooks/useProviderAppointments"
 import { useAppointmentStore } from "@/store/appointmentStore"
 import { AgendaPrestador } from "@/components/dashboard/prestador/agenda-prestador"
 import { BloqueioHorarios } from "@/components/dashboard/prestador/bloqueio-horarios"
 import { useAuth } from "@/hooks/useAuth"
 
 export default function PrestadorAgendaPage() {
-
   const { isLoading } = useAuth()
   const { user } = usePrestadorAuth()
   const { getAppointments } = useAppointmentStore()
-  const { appointments } = Appointments()
+  const { appointmentsProvider } = useProviderAppointments()
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [activeTab, setActiveTab] = useState("agenda")
 
   useEffect(() => {
 
     if (!isLoading && user) {
-      appointments(user)
+      appointmentsProvider(user)
     }
   }, [user, isLoading])
 
@@ -109,10 +108,7 @@ export default function PrestadorAgendaPage() {
                 </CardHeader>
                 <CardContent>
                   <AgendaPrestador
-                    agendamentos={selectedDateAppointments.map(appointment => ({
-                      ...appointment,
-                      status: appointment.status || "",
-                    }))}
+                    agendamentos={selectedDateAppointments}
                     emptyMessage="Não há agendamentos para esta data."
                   />
                 </CardContent>

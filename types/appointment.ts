@@ -1,10 +1,14 @@
-export interface appointment {
+import { ClienteUser } from "./user";
+
+export interface appointmentTypes {
   id: string,
   clientId: string,
+  client: ClienteUser,
   providerId: string,
   establishmentId: string,
   serviceId: string,
   date: string,
-  status: 'pending' | 'confirmed' | 'cancelled',
+  endDate?: string,
+  status?: 'pending' | 'confirmed' | 'cancelled',
   price: number,
 }

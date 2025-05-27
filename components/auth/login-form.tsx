@@ -43,7 +43,6 @@ export function LoginForm({ type, title, redirectToLogin, backLink = "/" }: Prop
 
   async function onSubmit(data: LoginFormValues) {
     setError(null)
-    debugger
     try {
       login({
         email: data.email,
