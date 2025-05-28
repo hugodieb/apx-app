@@ -1,68 +1,57 @@
-import { BaseUser, User } from '@/types/user';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { BaseUser } from '@/types/user';
+import { useMutation } from '@tanstack/react-query';
 import { authApi as api } from '@/lib/api-provider';
 import { useAppointmentStore } from '@/store/appointmentStore';
-import { appointmentTypes } from '@/types/appointment';
+import { Appointment, AppointmentWithClient } from '@/types/appointment';
+import { toast } from 'sonner';
+import { error } from 'console';
 
 interface UpdateAppointmentParams {
   appointmentId: string;
-  status: appointmentTypes['status'];
+  status: Appointment['status'];
+  reason?: string;
 }
 
 export function useProviderAppointments() {
+  const setAppointments = useAppointmentStore.getState().setAppointments;
+  const updateAppointment = useAppointmentStore.getState().updateAppointment;
 
   const providerAppointmentsMutation = useMutation({
-    mutationFn: async (params: BaseUser): Promise<appointmentTypes[]> => {
-      const response = await api.appointments(params)
-      return response
+    mutationFn: async (params: BaseUser): Promise<AppointmentWithClient[]> => {
+      return api.appointments(params);
     },
-    onSuccess: async (appointments) => {
-      useAppointmentStore.getState().setAppointments(appointments)
-    }
-  })
+    onSuccess: (appointments) => {
+      setAppointments(appointments);
+    },
+  });
 
   const updateProviderAppointmentStatusMutation = useMutation({
-    mutationFn: async (params: UpdateAppointmentParams): Promise<appointmentTypes> => {
-      const response = await api.updateAppointmentStatus(params.appointmentId, params.status);
-      return response;
+    mutationFn: async ({ appointmentId, status, reason }: UpdateAppointmentParams): Promise<AppointmentWithClient> => {
+      return api.updateAppointmentStatus(appointmentId, status, reason);
     },
-    onSuccess: async (appointment) => {
-      useAppointmentStore.getState().updateAppointment(appointment);
+    onSuccess: (appointment) => {
+      updateAppointment(appointment);
+      toast.success("Atualizado com sucesso!")
     },
-  })
-
-  const acceptProviderAppointment = (appointmentId: string) => {
-    updateProviderAppointmentStatusMutation.mutate({
-      appointmentId,
-      status: 'confirmed'
-    });
-  }
-
-  const rejecProvidertAppointment = (appointmentId: string) => {
-    updateProviderAppointmentStatusMutation.mutate({
-      appointmentId,
-      status: 'cancelled'
-    })
-  }
-
-  const clientAppointmentsMutation = useMutation({
-    mutationFn: async (clientId: string): Promise<appointmentTypes[]> => {
-      const response = await api.getClientAppointments(clientId);
-      return response;
-    },
-    onSuccess: async (appointments) => {
-      //useAppointmentStore.getState().setAppointments(appointments);
+    onError: (error) => {
+      toast.error("Algo deu errado!, contate o administrador.")
     }
-  })
+  });
+
+  const updateStatus = (appointmentId: string, status: Appointment['status'], reason?: string) => {
+    updateProviderAppointmentStatusMutation.mutate({ appointmentId, status, reason });
+  };
+
+  const acceptProviderAppointment = (appointmentId: string, reason?: string) => updateStatus(appointmentId, 'confirmed');
+  const rejectProviderAppointment = (appointmentId: string, reason?: string) => updateStatus(appointmentId, 'cancelled', 'Rejected by provider');
 
   return {
     appointmentsProvider: providerAppointmentsMutation.mutate,
-    clientAppointments: clientAppointmentsMutation.mutate,
     acceptProviderAppointment,
-    rejecProvidertAppointment,
+    rejectProviderAppointment,
     isLoadingAppointments: providerAppointmentsMutation.isPending,
     isUpdatingStatus: updateProviderAppointmentStatusMutation.isPending,
     appointmentsError: providerAppointmentsMutation.error,
     updateError: updateProviderAppointmentStatusMutation.error,
-  }
+  };
 }

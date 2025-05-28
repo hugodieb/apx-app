@@ -413,6 +413,7 @@ export const mockAppointments = [
     serviceId: "s1",
     date: "2025-05-27T14:00:00",
     status: "pending",
+    reason: "",
     price: 50,
   },
   {
@@ -423,6 +424,7 @@ export const mockAppointments = [
     serviceId: "s3",
     date: "2025-05-27T16:30:00",
     status: "pending",
+    reason: "",
     price: 70,
   },
   {
@@ -433,6 +435,7 @@ export const mockAppointments = [
     serviceId: "s7",
     date: "2025-04-30T08:00:00", // Dia inteiro
     status: "confirmed",
+    reason: "",
     price: 150,
   },
   {
@@ -443,6 +446,7 @@ export const mockAppointments = [
     serviceId: "s10",
     date: "2025-05-02T15:00:00",
     status: "pending",
+    reason: "",
     price: 80,
   },
   {
@@ -454,6 +458,7 @@ export const mockAppointments = [
     date: "2025-05-05T09:00:00", // Projeto de 2 dias
     endDate: "2025-05-06T18:00:00",
     status: "confirmed",
+    reason: "",
     price: 1500,
   },
 ]

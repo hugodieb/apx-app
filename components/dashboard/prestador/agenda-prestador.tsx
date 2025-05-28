@@ -17,13 +17,13 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { format, isToday, isTomorrow } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { useProviderAppointments } from "@/hooks/useProviderAppointments"
-import { appointmentTypes } from "@/types/appointment"
+import { useProviderAppointments, } from "@/hooks/useProviderAppointments"
+import { AppointmentWithClient } from "@/types/appointment"
 import { usePrestadorAuth } from "@/store/auth"
 
 
 interface AgendaPrestadorProps {
-  agendamentos: appointmentTypes[]
+  agendamentos: AppointmentWithClient[]
   emptyMessage: string
   showAcceptButton?: boolean
   showRejectButton?: boolean
@@ -37,26 +37,31 @@ export function AgendaPrestador({
 }: AgendaPrestadorProps) {
   const { user } = usePrestadorAuth()
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
-  const [selectedAppointment, setSelectedAppointment] = useState<appointmentTypes | null>(null)
+  const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithClient | null>(null)
   const [rejectReason, setRejectReason] = useState("")
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
-  const { acceptProviderAppointment } = useProviderAppointments()
+  const { acceptProviderAppointment, rejectProviderAppointment } = useProviderAppointments()
 
-  const handleReject = (appointment: appointmentTypes) => {
+  const handleReject = (appointment: AppointmentWithClient) => {
     setSelectedAppointment(appointment)
     setRejectDialogOpen(true)
   }
 
   const confirmReject = () => {
+    const appointmentId = selectedAppointment?.id
+
     setRejectDialogOpen(false)
-    setRejectReason("")
+
+    if (appointmentId) {
+      rejectProviderAppointment(appointmentId, rejectReason)
+    }
   }
 
   const acceptAppointment = (appointmentId: string) => {
     acceptProviderAppointment(appointmentId)
   }
 
-  const showDetails = (appointment: appointmentTypes) => {
+  const showDetails = (appointment: AppointmentWithClient) => {
     setSelectedAppointment(appointment)
     setDetailsDialogOpen(true)
   }
