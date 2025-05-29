@@ -5,7 +5,6 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { usePrestadorAuth } from "@/store/auth"
 import { Button } from "@/components/ui/button"
-import LoadingSpinner from "@/app/loading"
 
 import {
   Calendar,
@@ -23,6 +22,7 @@ import {
   Building,
 } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
+import { useProviderAppointments } from "@/hooks/useProviderAppointments"
 
 interface PrestadorLayoutProps {
   children: ReactNode
@@ -31,9 +31,9 @@ interface PrestadorLayoutProps {
 export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const { isLoading } = useAuth()
+  const { appointmentsProvider } = useProviderAppointments()
   const { user, isAuthenticated } = usePrestadorAuth()
-  const { logout } = useAuth()
+  const { logout, isLoading } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const navigation = [
@@ -49,16 +49,10 @@ export function PrestadorLayout({ children }: PrestadorLayoutProps) {
   ]
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated || user?.type !== "prestador") {
-        router.push("/cliente/login")
-      }
+    if (!isLoading && user) {
+      appointmentsProvider(user)
     }
-  }, [isLoading, isAuthenticated, user, router])
-
-  if (isLoading) {
-    return <LoadingSpinner />
-  }
+  }, [user, isAuthenticated, isLoading, appointmentsProvider])
 
   if (!isAuthenticated || user?.type !== "prestador") {
     return null

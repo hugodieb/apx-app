@@ -15,14 +15,22 @@ interface UpdateAppointmentParams {
 export function useProviderAppointments() {
   const setAppointments = useAppointmentStore.getState().setAppointments;
   const updateAppointment = useAppointmentStore.getState().updateAppointment;
+  const setIsLoadingAppointments = useAppointmentStore.getState().setIsLoadingAppointments;
+
 
   const providerAppointmentsMutation = useMutation({
     mutationFn: async (params: BaseUser): Promise<AppointmentWithClient[]> => {
+      setIsLoadingAppointments(true);
       return api.appointments(params);
     },
     onSuccess: (appointments) => {
       setAppointments(appointments);
+      setIsLoadingAppointments(false);
     },
+    onError: (error) => {
+      setIsLoadingAppointments(false);
+      toast.error("Algo deu errado!, contate o administrador.")
+    }
   });
 
   const updateProviderAppointmentStatusMutation = useMutation({

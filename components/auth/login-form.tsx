@@ -12,7 +12,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
-import { useClienteAuth } from "@/store/auth"
 import { Loader2 } from "lucide-react"
 
 const loginSchema = z.object({

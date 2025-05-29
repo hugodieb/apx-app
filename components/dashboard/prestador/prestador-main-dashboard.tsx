@@ -1,17 +1,18 @@
 "use client"
 
 import { usePrestadorAuth } from "@/store/auth"
-import { mockAppointments } from "@/lib/mock-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, DollarSign, Star, User } from "lucide-react"
+import { Calendar, Clock, Divide, DollarSign, Star, User } from "lucide-react"
+import { useAppointmentStore } from "@/store/appointmentStore"
 
 export default function PrestadorMainDashboard() {
   const { user } = usePrestadorAuth()
+  const { getAppointments } = useAppointmentStore()
   const services = user?.services
 
   // Filtrar agendamentos do prestador atual
-  const providerAppointments = mockAppointments.filter((appointment) => appointment.providerId === user?.id)
+  const providerAppointments = getAppointments().filter((appointment) => appointment.providerId === user?.id)
 
   // Ordenar por data (próximos primeiro)
   const sortedAppointments = [...providerAppointments].sort(
@@ -28,6 +29,7 @@ export default function PrestadorMainDashboard() {
   const totalRevenue = providerAppointments.reduce((sum, appointment) => sum + appointment.price, 0)
 
   return (
+
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card className="bg-slate-800 border-slate-700">

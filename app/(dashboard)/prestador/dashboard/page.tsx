@@ -6,10 +6,17 @@ import { Button } from "@/components/ui/button"
 import { Building } from "lucide-react"
 import { PrestadorLayout } from "@/components/dashboard/prestador/prestador-layout"
 import Link from "next/link"
+import { useAuth } from "@/hooks/useAuth"
 import PrestadorMainDashboard from "@/components/dashboard/prestador/prestador-main-dashboard"
+import { useEffect } from "react"
+import LoadingSpinner from "@/app/loading"
+import { useProviderAppointments } from "@/hooks/useProviderAppointments"
+import { useAppointmentStore } from "@/store/appointmentStore"
 
 export default function PrestadorDashboardPage() {
   const { user } = usePrestadorAuth()
+  const { getAppointments, isLoadingAppointments } = useAppointmentStore()
+  const providerAppointments = getAppointments().filter((appointment) => appointment.providerId === user?.id)
 
   const hasEstablishment = user?.establishmentId && user.establishmentId.length > 0
 
@@ -39,8 +46,14 @@ export default function PrestadorDashboardPage() {
               </div>
             </CardContent>
           </Card>
-        ) : (
+        ) : isLoadingAppointments ? (
+          <LoadingSpinner title="Atualizando agenda..." />
+        ) : providerAppointments.length > 0 ? (
           <PrestadorMainDashboard />
+        ) : (
+          <div className="flex flex-col items-center justify-center min-h-screen">
+            Nenhum agendamento disponível no momento...
+          </div>
         )}
       </div>
     </PrestadorLayout>

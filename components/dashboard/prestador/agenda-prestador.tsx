@@ -40,7 +40,7 @@ export function AgendaPrestador({
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithClient | null>(null)
   const [rejectReason, setRejectReason] = useState("")
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
-  const { acceptProviderAppointment, rejectProviderAppointment } = useProviderAppointments()
+  const { acceptProviderAppointment, rejectProviderAppointment, isUpdatingStatus } = useProviderAppointments()
 
   const handleReject = (appointment: AppointmentWithClient) => {
     setSelectedAppointment(appointment)
